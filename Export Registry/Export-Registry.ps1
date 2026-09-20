@@ -63,10 +63,10 @@ function Export-Registry {
             Remove-Item -Path $Outfile -Force:$true -Confirm:$false | Out-Null
             
             #Install ImportExcel module if needed
-            write-host ("Checking if ImportExcel PowerShell module is installed...") -ForegroundColor Green
+            Write-Host ("Checking if ImportExcel PowerShell module is installed...") -ForegroundColor Green
             if (-not (Get-Module -ListAvailable | Where-Object Name -Match ImportExcel)) {
                 Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
-                Install-Module ImportExcel -Scope CurrentUser -Force:$true
+                Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true
                 Import-Module ImportExcel
             }
 

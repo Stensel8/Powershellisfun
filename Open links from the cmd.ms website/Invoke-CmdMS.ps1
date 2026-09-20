@@ -66,7 +66,7 @@ function Invoke-CmdMS {
         if ($host.Version.Major -ge 7) {
             if (-not (Get-Module Microsoft.PowerShell.ConsoleGuiTools -ListAvailable )) {
                 try {
-                    Install-Module Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -ErrorAction Stop
+                    Install-PSResource -Name Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
                     Write-Host ("Installed required Module Microsoft.PowerShell.ConsoleGuiTools") -ForegroundColor Green
                 }
                 catch {

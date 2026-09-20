@@ -52,7 +52,7 @@ if ($InputFile.EndsWith('.xlsx')) {
         catch {
             Write-Warning ("Required ImportExcel module is not installed, installing now...")
             try {
-                Install-Module -Name ImportExcel -SkipPublisherCheck:$true -Force:$true -ErrorAction Stop
+                Install-PSResource -Name ImportExcel -TrustRepository:$true -ErrorAction Stop
                 Import-Module -Name ImportExcel
             }
             catch {

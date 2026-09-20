@@ -31,7 +31,7 @@ $programs.GetEnumerator() | ForEach-Object {
         #Shortcut variables for root of Start Menu folder
         if ($_.Value[1] -eq 'None') {
             if (-not (Test-Path -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\$($_.Key).lnk")) {
-                write-host ("Shortcut for {0} not found with path {1}, creating it now..." -f $_.Key, $_.Value[0])
+                Write-Host ("Shortcut for {0} not found with path {1}, creating it now..." -f $_.Key, $_.Value[0])
                 $create = "Yes"
                 $shortcut = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\$($_.Key).lnk"
                 $target = $_.Value[0]                
@@ -42,12 +42,12 @@ $programs.GetEnumerator() | ForEach-Object {
         if ($_.Value[1] -ne 'None') {
             if (-not (Test-Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\$($_.Value[1])\$($_.Key).lnk")) {
                 if (-not (Test-Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\$($_.Value[1])")) {
-                    write-host ("Specified folder {0} doesn't exist for the {1} shortcut, creating now..." -f $_.Value[1], $_.Key)
+                    Write-Host ("Specified folder {0} doesn't exist for the {1} shortcut, creating now..." -f $_.Value[1], $_.Key)
                     New-Item -ItemType Directory -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\$($_.Value[1])" -Force | Out-Null
-                    write-host ("Creating shortcut for {0} with path {1} in folder {2}..." -f $_.Key, $_.Value[0], $_.Value[1])
+                    Write-Host ("Creating shortcut for {0} with path {1} in folder {2}..." -f $_.Key, $_.Value[0], $_.Value[1])
                 }
                 else {
-                    write-host ("Shortcut for {0} not found with path {1} in existing folder {2}, creating it now..." -f $_.Key, $_.Value[0], $_.Value[1])
+                    Write-Host ("Shortcut for {0} not found with path {1} in existing folder {2}, creating it now..." -f $_.Key, $_.Value[0], $_.Value[1])
                 }
                 $create = "Yes"
                 $shortcut = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\$($_.Value[1])\$($_.Key).lnk"

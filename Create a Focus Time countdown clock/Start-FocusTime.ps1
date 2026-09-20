@@ -36,21 +36,21 @@ function Start-FocusTime {
     $spinner = @('|', '/', '-', '\')
     $spinnerPos = 0
     $remain = $t
-    $d = ( get-date) + $t
+    $d = ( Get-Date) + $t
     [int]$TickLength = 1
-    $remain = ($d - (get-date))
+    $remain = ($d - (Get-Date))
     Write-Host ("Starting focus time for {0} minutes" -f $Minutes) -ForegroundColor Green
     while ($remain.TotalSeconds -gt 0) {
         Write-Host (" {0} " -f $spinner[$spinnerPos % 4]) -ForegroundColor Green -NoNewline
-        write-host (" {0}D {1:d2}h {2:d2}m {3:d2}s " -f $remain.Days, $remain.Hours, $remain.Minutes, $remain.Seconds) -NoNewline
+        Write-Host (" {0}D {1:d2}h {2:d2}m {3:d2}s " -f $remain.Days, $remain.Hours, $remain.Minutes, $remain.Seconds) -NoNewline
         $host.UI.RawUI.CursorPosition = $origpos
         $spinnerPos += 1
         Start-Sleep -seconds $TickLength
-        $remain = ($d - (get-date))
+        $remain = ($d - (Get-Date))
     }
     $host.UI.RawUI.CursorPosition = $origpos
     Write-Host " * "  -ForegroundColor Green -NoNewline
-    write-host " Countdown finished, restarting programs..." -ForegroundColor Green
+    Write-Host " Countdown finished, restarting programs..." -ForegroundColor Green
     
     foreach ($program in $ProgramsToKill) {
         try {

@@ -15,7 +15,7 @@ foreach ($module in 'Microsoft.WinGet.Client', 'Microsoft.PowerShell.ConsoleGuiT
     if (-not (Get-Module -Name $module -ListAvailable)) {
         try {
             Write-Warning ("The required module {0} was not found, installing now..." -f $module) 
-            Install-Module -Name $module -Scope CurrentUser -AllowClobber:$true -ErrorAction Stop
+            Install-PSResource -Name $module -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
             Import-Module -Name $module -ErrorAction Stop
         }
         catch {
@@ -39,9 +39,9 @@ if (-not (Get-AppxPackage -Name Microsoft.DesktopAppInstaller)) {
     try {
         $progressPreference = 'silentlyContinue'
         Write-Warning ("WinGet client was not found, installing now...")
-        Invoke-WebRequest -Uri https://aka.ms/getwinget -OutFile $env:temp\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -UseBasicParsing -ErrorAction Stop
-        Invoke-WebRequest -Uri https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx -OutFile $env:temp\Microsoft.VCLibs.x64.14.00.Desktop.appx -UseBasicParsing -ErrorAction Stop
-        Invoke-WebRequest -Uri https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx -OutFile $env:temp\Microsoft.UI.Xaml.2.8.x64.appx -UseBasicParsing -ErrorAction Stop
+        Invoke-WebRequest -Uri https://aka.ms/getwinget -OutFile $env:temp\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -ErrorAction Stop
+        Invoke-WebRequest -Uri https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx -OutFile $env:temp\Microsoft.VCLibs.x64.14.00.Desktop.appx -ErrorAction Stop
+        Invoke-WebRequest -Uri https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx -OutFile $env:temp\Microsoft.UI.Xaml.2.8.x64.appx -ErrorAction Stop
         Add-AppxPackage $env:temp\Microsoft.VCLibs.x64.14.00.Desktop.appx -ErrorAction Stop
         Add-AppxPackage $env:temp\Microsoft.UI.Xaml.2.8.x64.appx -ErrorAction Stop
         Add-AppxPackage $env:temp\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -ErrorAction Stop
@@ -78,7 +78,7 @@ if ($null -ne $Applications) {
     $total = foreach ($item in $Applications | Sort-Object ID) {
         Write-Host ("Processing {0}..." -f $item.ID) -ForegroundColor Green
         try {
-            $ApplicationYAML = Invoke-RestMethod ("https://raw.githubusercontent.com/microsoft/winget-pkgs/refs/heads/master/manifests/{0}/{1}/{2}/$($Item.ID).installer.yaml" -f $Item.ID.Substring(0, 1).ToLower(), $Item.ID.Replace('.', '/'), $Item.version) -UseBasicParsing -Method Get -ErrorAction Stop | ConvertFrom-Yaml -ErrorAction Stop
+            $ApplicationYAML = Invoke-RestMethod ("https://raw.githubusercontent.com/microsoft/winget-pkgs/refs/heads/master/manifests/{0}/{1}/{2}/$($Item.ID).installer.yaml" -f $Item.ID.Substring(0, 1).ToLower(), $Item.ID.Replace('.', '/'), $Item.version) -Method Get -ErrorAction Stop | ConvertFrom-Yaml -ErrorAction Stop
             foreach ($installer in $ApplicationYAML.Installers) {
                 $applicationdetails = Get-WinGetPackageInfo -Id $item.ID -ErrorAction Stop
                 [PSCustomObject]@{
@@ -116,7 +116,7 @@ if ($null -ne $total) {
                     $total | Sort-Object Name, Author, Version, 'Release Date', 'Installer Architecture' | Out-ConsoleGridView -Title 'WinGet Information'
                 }
                 catch {
-                    Write-Warning ("Error sending information to Out-ConsoleGridview, exiting...")
+                    Write-Warning ("Error sending information to Out-ConsoleGridView, exiting...")
                     return
                 }
             }
@@ -125,7 +125,7 @@ if ($null -ne $total) {
                     $total | Sort-Object Name, Author, Version, 'Release Date', 'Installer Architecture' | Out-GridView -Title 'WinGet Information'
                 }
                 catch {
-                    Write-Warning ("Error sending information to Out-Gridview, exiting...")
+                    Write-Warning ("Error sending information to Out-GridView, exiting...")
                     return
                 }
             }
@@ -156,7 +156,7 @@ if ($null -ne $total) {
         if ($Filename.EndsWith('xlsx')) {
             if (-not (Get-Module ImportExcel -ListAvailable)) {
                 try {
-                    Install-Module ImportExcel -Scope CurrentUser -ErrorAction Stop
+                    Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
                     Import-Module ImportExcel -ErrorAction Stop
                     Write-Host ('Installed missing PowerShell Module ImportExcel which is needed for XLSX output') -ForegroundColor Green
                 }

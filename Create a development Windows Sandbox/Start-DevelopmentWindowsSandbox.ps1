@@ -38,7 +38,7 @@ $wsb += "<ReadOnly>true</ReadOnly>"
 $wsb += "</MappedFolder>"
 $wsb += "</MappedFolders>"
 
-$LogonCommandFull = 'Powershell.exe -ExecutionPolicy bypass -File C:\users\wdagutilityaccount\desktop\' + $(Get-childitem -Path $($wsblocation) -Directory).Directory.Name + '\' + $logoncommand
+$LogonCommandFull = 'Powershell.exe -ExecutionPolicy bypass -File C:\users\wdagutilityaccount\desktop\' + $(Get-ChildItem -Path $($wsblocation) -Directory).Directory.Name + '\' + $logoncommand
 $wsb += "<LogonCommand>"
 $wsb += "<Command>$($LogonCommandFull)</Command>"
 $wsb += "</LogonCommand>"

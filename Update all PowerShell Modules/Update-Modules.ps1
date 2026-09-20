@@ -29,6 +29,7 @@ function Update-Modules {
     $ProgressPreference = 'SilentlyContinue'
 
     # Install the Microsoft.PowerShell.PSResourceGet Module if not available (PowerShell v5 doesn't ship with it by default like in v7)
+    # This is the one place Install-Module is still used on purpose, it's what bootstraps PSResourceGet itself
     if (-not (Get-Module -Name Microsoft.PowerShell.PSResourceGet -ListAvailable)) {
         try {
             Install-Module -Name Microsoft.PowerShell.PSResourceGet -Scope:$Scope -Force:$true -Confirm:$false -SkipPublisherCheck:$true -ErrorAction Stop
@@ -58,7 +59,7 @@ function Update-Modules {
         foreach ($Module in $InstalledModules) {
             Write-Host ("Checking if module {0} was installed from PSGallery, installing it using PSResourceGet if needed" -f $module.Name) -ForegroundColor Green
             if (-not (Get-InstalledPSResource -Name $Module.Name -Scope:$Scope -ErrorAction SilentlyContinue)) {
-                if (Find-Module -Name $module.name -ErrorAction SilentlyContinue) {
+                if (Find-PSResource -Name $module.name -ErrorAction SilentlyContinue) {
                     try {
                         Install-PSResource $Module.Name -Prerelease:$Prerelease.IsPresent -AcceptLicense:$true -Scope:$Scope -ErrorAction Stop -WhatIf:$WhatIf.IsPresent -Verbose:$Verbose.IsPresent -SkipDependencyCheck:$true -Reinstall:$true
                         Write-Host ("- Installed {0} using PSResourceGet" -f $module.Name) -ForegroundColor Gray

@@ -1,5 +1,5 @@
 #-Requires RunAsAdministrator
-function Search-Eventlog {
+function Search-EventLog {
     [CmdletBinding(DefaultParameterSetName = 'All')]
     param (
         [Parameter(Mandatory = $false, HelpMessage = "Name of remote computer")][string]$ComputerName = $env:COMPUTERNAME,
@@ -95,7 +95,7 @@ function Search-Eventlog {
     if ($OutCSV -and $total) {
         try {
             $total | Sort-Object Time, LogName | 
-            export-csv -NoTypeInformation -Delimiter ';' -Encoding UTF8 -Path $OutCSV -ErrorAction Stop
+            Export-Csv -NoTypeInformation -Delimiter ';' -Encoding UTF8 -Path $OutCSV -ErrorAction Stop
             Write-Host ("Exported results to {0}" -f $OutCSV) -ForegroundColor Green
         }
         catch {

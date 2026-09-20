@@ -22,7 +22,7 @@ if (-not ($SkipImportExcelModuleCheck)) {
     Write-Host ("Checking if ImportExcel module is installed...") -ForegroundColor Green
     if (-not (Get-Module -ListAvailable | Where-Object Name -Match 'ImportExcel')) {
         Write-Warning ("Required ImportExcel module is not installed, installing now...")
-        Install-Module -Name ImportExcel -SkipPublisherCheck:$true -Force:$true
+        Install-PSResource -Name ImportExcel -TrustRepository:$true
     }
 }
 

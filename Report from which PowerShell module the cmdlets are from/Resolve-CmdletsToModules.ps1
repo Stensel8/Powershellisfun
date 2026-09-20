@@ -19,7 +19,7 @@ function Resolve-CmdletsToModules {
         try {
             $scriptcontents = Get-Clipboard -ErrorAction Stop
             if ($scriptcontents.Length -gt 0) {
-                write-host ("The Clipboard content is valid, continuing...") -ForegroundColor Green
+                Write-Host ("The Clipboard content is valid, continuing...") -ForegroundColor Green
             }
             else {
                 Write-Warning ("Could not read Clipboard contents correctly, picture in Clipboard perhaps? Exiting...")
@@ -40,7 +40,7 @@ function Resolve-CmdletsToModules {
     #Check if specified file is correct and read contents of file in $scriptcontents
     if ($scriptfile) {
         if (Test-Path -Path $scriptfile) {
-            write-host ("The specified file {0} is valid, continuing..." -f $scriptfile) -ForegroundColor Green
+            Write-Host ("The specified file {0} is valid, continuing..." -f $scriptfile) -ForegroundColor Green
             $scriptcontents = Get-Content -Path $scriptfile
         }
         else {
@@ -78,7 +78,7 @@ function Resolve-CmdletsToModules {
     #Search for the module(s) that the cmdlet is from
     $results = foreach ($cmdlet in ($cmdletstocheck | Sort-Object -Property * -Unique).Cmdlet | Sort-Object) {
         try {
-            $cmdletinfo = Get-Command -Name $cmdlet -Erroraction Stop
+            $cmdletinfo = Get-Command -Name $cmdlet -ErrorAction Stop
             Write-Host ("Checking {0} locally" -f $cmdlet) -ForegroundColor Green
             foreach ($info in $cmdletinfo) {
                 [PSCustomObject]@{
@@ -94,10 +94,10 @@ function Resolve-CmdletsToModules {
         }
         catch {
             Write-Warning ("Could not find information for {0} in your local modules, trying online..." -f $cmdlet)
-            $cmdletinfo = Find-Module -Command $cmdlet
+            $cmdletinfo = Find-PSResource -CommandName $cmdlet
             Write-Host ("Checking {0} online" -f $cmdlet) -ForegroundColor Green
             if ($cmdletinfo) {
-                foreach ($info in $cmdletinfo) {
+                foreach ($info in $cmdletinfo.ParentResource) {
                     [PSCustomObject]@{
                         CmdletName                                = $cmdlet
                         CommandType                               = $info.Type
@@ -145,7 +145,7 @@ function Resolve-CmdletsToModules {
                 #Install ImportExcel module if needed
                 if (-not (Get-Module -Name importexcel -ListAvailable)) {
                     Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
-                    Install-Module ImportExcel -Scope CurrentUser -Force:$true
+                    Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true
                     Import-Module ImportExcel
                 }
                 Import-Module ImportExcel

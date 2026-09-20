@@ -31,7 +31,7 @@ function Get-ActiveDirectoryContainerPermissions {
             try {
                 Write-Host ("Retrieving Containers for Domain {0} starting from {1}" -f $domain, $StartContainer) -ForegroundColor Green
                 #$containerlist = Get-ADOrganizationalUnit -SearchBase $StartContainer -Filter * -ResultSetSize 10000 -SearchScope Subtree -ErrorAction Stop | Sort-Object DistinguishedName
-                $containerlist = Get-ADObject -Filter { (objectClass -eq "Container") } -SearchBase $StartContainer -ResultSetSize 10000 -SearchScope Subtree -ErrorAction Stop | Sort-Object DistinguishedName
+                $containerlist = Get-ADObject -Filter 'objectClass -eq "Container"' -SearchBase $StartContainer -ResultSetSize 10000 -SearchScope Subtree -ErrorAction Stop | Sort-Object DistinguishedName
             }
             catch {
                 Write-Warning ("Could not use {0}, check spelling and format it like 'OU=Servers,DC=domain,DC=Local')" -f $StartContainer)
@@ -41,7 +41,7 @@ function Get-ActiveDirectoryContainerPermissions {
         else {
             Write-Host ("Retrieving all Containers for Domain {0}" -f $domain, $StartContainer) -ForegroundColor Green
             #$containerlist = Get-ADOrganizationalUnit -Filter * -ResultSetSize 10000 -SearchScope Subtree -ErrorAction Stop | Sort-Object DistinguishedName
-            $containerlist = Get-ADObject -Filter { (objectClass -eq "Container") } -ResultSetSize 10000 -SearchScope Subtree -ErrorAction Stop | Sort-Object DistinguishedName
+            $containerlist = Get-ADObject -Filter 'objectClass -eq "Container"' -ResultSetSize 10000 -SearchScope Subtree -ErrorAction Stop | Sort-Object DistinguishedName
         }
     }
     
@@ -126,11 +126,11 @@ function Get-ActiveDirectoryContainerPermissions {
     #Create empty variable acltotal, loop through all Containers and save the ACL's to $acltotal
     $acltotal = foreach ($container in $containerlist) {
         Write-Host ("Processing {0}" -f $container.DistinguishedName) -ForegroundColor Green
-        $acls = (Get-Acl -path "AD:$($container.DistinguishedName)").Access
+        $acls = (Get-Acl -Path "AD:$($container.DistinguishedName)").Access
         foreach ($acl in $acls) {            
             #If IdentityReference matches item in $customidentifiers, change it to the friendly name
             #Otherwise just use the IdentityReference found by Get-Acl
-            if ($customidentifiers | Select-string "$($acl.IdentityReference.Value)" -SimpleMatch ) {
+            if ($customidentifiers | Select-String "$($acl.IdentityReference.Value)" -SimpleMatch ) {
                 $IdentityReference = ($customidentifiers | Select-Object -Property $acl.IdentityReference.Value)#.$($acl.IdentityReference.Value)
             }
             else {

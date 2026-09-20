@@ -52,7 +52,7 @@ param (
 )
 $selection = $PSCmdlet.ParameterSetName
 $ProgressPreference = "SilentlyContinue"
-$contents = Invoke-WebRequest -Uri "https://9gagrss.xyz/json.php?channel=$($selection)&limit=100" -UseBasicParsing
+$contents = Invoke-WebRequest -Uri "https://9gagrss.xyz/json.php?channel=$($selection)&limit=100"
 $number = Get-Random -Minimum 1 -Maximum 101
 $9gag = ($contents | ConvertFrom-Json).data.posts[$number]
  

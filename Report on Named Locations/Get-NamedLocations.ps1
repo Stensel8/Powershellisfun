@@ -5,9 +5,9 @@ param (
 
 #Check if required Microsoft.Graph.Authentication, and Microsoft.Graph.Identity.SignIns Modules are installed
 #and install them if needed
-if (-not (Get-InstalledModule Microsoft.Graph.Authentication, Microsoft.Graph.Identity.SignIns)) {
+if (-not (Get-InstalledPSResource -Name Microsoft.Graph.Authentication, Microsoft.Graph.Identity.SignIns -ErrorAction SilentlyContinue)) {
     try {
-        Install-Module -Name Microsoft.Graph.Authentication, Microsoft.Graph.Identity.SignIns -Scope CurrentUser -ErrorAction Stop
+        Install-PSResource -Name Microsoft.Graph.Authentication, Microsoft.Graph.Identity.SignIns -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
     }
     catch {
         Write-Warning ("Error installing required modules, exiting...")
@@ -111,7 +111,7 @@ try {
 catch {
     Write-Warning ("The Microsoft.PowerShell.ConsoleGuiTools was not found, installing now...")
     try {
-        Install-Module -Name Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -Force:$true -ErrorAction Stop 
+        Install-PSResource -Name Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop 
         $Total | Sort-Object Name | Out-ConsoleGridView -Title 'List of all Named Locations, press Esc to exit'
     }
     catch {
@@ -131,7 +131,7 @@ if ($FileName) {
             if (-not (Get-Module -ListAvailable | Where-Object Name -Match ImportExcel)) {
                 try {
                     Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
-                    Install-Module ImportExcel -Scope CurrentUser -Force:$true -ErrorAction Stop
+                    Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
                     Import-Module ImportExcel -ErrorAction Stop
                 }
                 catch {

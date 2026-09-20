@@ -88,7 +88,7 @@ function Start-WinGetUpdate {
 
             [System.Object]$GitHubInfo = [PSCustomObject]@{
                 Tag         = $latestVersion
-                DownloadUrl = $GithubInfoRestData.assets | where-object { $_.name -like "*.msixbundle" } | Select-Object -ExpandProperty browser_download_url
+                DownloadUrl = $GithubInfoRestData.assets | Where-Object { $_.name -like "*.msixbundle" } | Select-Object -ExpandProperty browser_download_url
                 OutFile     = "$env:TEMP\WinGet_$($latestVersion).msixbundle"
             }
         }
@@ -103,13 +103,13 @@ function Start-WinGetUpdate {
         # Checking if the installed version of WinGet are the same as the latest version of WinGet
         if ($CheckWinGet -le $GitHubInfo.Tag) {
             Write-Output "WinGet has a newer version $($GitHubInfo.Tag), downloading and installing it..."
-            Invoke-WebRequest -UseBasicParsing -Uri $GitHubInfo.DownloadUrl -OutFile $GitHubInfo.OutFile
+            Invoke-WebRequest -Uri $GitHubInfo.DownloadUrl -OutFile $GitHubInfo.OutFile
 
             Write-Output "Installing version $($GitHubInfo.Tag) of WinGet..."
             Add-AppxPackage $($GitHubInfo.OutFile)
         }
         else {
-            Write-OutPut "Your already on the latest version of WinGet $($CheckWinGet), no need to update."
+            Write-Output "Your already on the latest version of WinGet $($CheckWinGet), no need to update."
         }
     }
 
@@ -117,7 +117,7 @@ function Start-WinGetUpdate {
     if ($null -eq $CheckVCLibs) {
         try {
             Write-Output "Microsoft.VCLibs is not installed, downloading and installing it now..."
-            Invoke-WebRequest -UseBasicParsing -Uri $VCLibsUrl -OutFile $VCLibsOutFile
+            Invoke-WebRequest -Uri $VCLibsUrl -OutFile $VCLibsOutFile
 
             Add-AppxPackage $VCLibsOutFile
         }
@@ -132,7 +132,7 @@ function Start-WinGetUpdate {
     }
 
     # Starts to check if you have any softwares that needs to be updated
-    Write-OutPut "Checks if any software needs to be updated"
+    Write-Output "Checks if any software needs to be updated"
     try {
         WinGet.exe upgrade --all --silent --force --accept-source-agreements --disable-interactivity --include-unknown
         Write-Output "Everything is now completed, you can close this window"

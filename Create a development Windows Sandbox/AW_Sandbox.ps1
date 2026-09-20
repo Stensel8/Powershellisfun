@@ -51,7 +51,7 @@ if ((Test-Path -Path $env:ProgramData\Liquit\Agent\Agent.json) -and (Test-Path -
         Copy-Item $env:ProgramData\Liquit\Agent\Agent.json -Destination $MappedFolder -Force:$true -Confirm:$false -ErrorAction Stop
         Copy-Item $env:ProgramData\Liquit\Agent\AgentRegistration.cer -Destination $MappedFolder -Force:$true -Confirm:$false -ErrorAction Stop
         $ProgressPreference = 'SilentlyContinue'
-        Invoke-WebRequest https://download.liquit.com/extra/Bootstrapper/AgentBootstrapper-Win-2.1.0.2.exe -UseBasicParsing -OutFile "$($MappedFolder)\AgentBootstrapper-Win.exe" -ErrorAction Stop
+        Invoke-WebRequest https://download.liquit.com/extra/Bootstrapper/AgentBootstrapper-Win-2.1.0.2.exe -OutFile "$($MappedFolder)\AgentBootstrapper-Win.exe" -ErrorAction Stop
         $ProgressPreference = 'Continue'
     }
     catch {
@@ -79,15 +79,15 @@ if ($json.deployment.autoStart.deployment -ne $Deployment) {
  
 #Create RecastComputerName.ps1 script, which will run when the Recast Sandbox starts and after every reboot (Add the rename to HKCU)
 try {
-    'Remove-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -name "Hostname"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$false -ErrorAction Stop
-    'Remove-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -name "NV Hostname"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
-    'Set-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\Computername\Computername" -name "Computername" -value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
-    'Set-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\Computername\ActiveComputername" -name "Computername" -value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
-    'Set-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -name "Hostname" -value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
-    'Set-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -name "NV Hostname" -value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
-    'Set-ItemProperty -path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -name "AltDefaultDomainName" -value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
-    'Set-ItemProperty -path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -name "DefaultDomainName" -value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
-    'Set-ItemProperty -path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -name "RecastComputerRename" -value "LogonScript"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
+    'Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "Hostname"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$false -ErrorAction Stop
+    'Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "NV Hostname"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
+    'Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Computername\Computername" -Name "Computername" -Value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
+    'Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Computername\ActiveComputername" -Name "Computername" -Value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
+    'Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "Hostname" -Value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
+    'Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "NV Hostname" -Value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
+    'Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "AltDefaultDomainName" -Value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
+    'Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "DefaultDomainName" -Value "RecastComputerName"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
+    'Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "RecastComputerRename" -Value "LogonScript"' | Out-File -FilePath "$($MappedFolder)\RecastComputerName.ps1" -Append:$true -ErrorAction Stop
 }
 catch {
     Write-Warning ("Error creating {0}, exiting..." -f "$($MappedFolder)\RecastComputerName.ps1")

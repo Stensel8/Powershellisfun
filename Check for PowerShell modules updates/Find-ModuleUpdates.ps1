@@ -5,13 +5,16 @@ param (
 
 #Retrieve all installed modules
 Write-Host ("Retrieving installed PowerShell modules") -ForegroundColor Green
-[array]$InstalledModules = Get-InstalledModule -Name $NameFilter -ErrorAction SilentlyContinue
+#Get-InstalledPSResource lists every installed version, so keep the newest one per module
+#which is what Get-InstalledModule used to return
+[array]$InstalledModules = Get-InstalledPSResource -Name $NameFilter -ErrorAction SilentlyContinue |
+    Group-Object Name | ForEach-Object { $_.Group | Sort-Object Version -Descending | Select-Object -First 1 }
 
 #Retrieve current versions of modules (63 at a time because of PSGallery limit) if $InstalledModules is greater than 0
 if ($InstalledModules.Count -eq 1) {
     $onlineversions = $null
     Write-Host ("Checking online versions for installed module {0}" -f $name) -ForegroundColor Green
-    $currentversions = Find-Module -Name $InstalledModules.name
+    $currentversions = Find-PSResource -Name $InstalledModules.name
     $onlineversions = $onlineversions + $currentversions
 }
 
@@ -21,7 +24,7 @@ if ($InstalledModules.Count -gt 1) {
     $onlineversions = $null
     while ($InstalledModules.Count -gt $onlineversions.Count) {
         Write-Host ("Checking online versions for installed modules [{0}..{1}/{2}]" -f $startnumber, $endnumber, $InstalledModules.Count) -ForegroundColor Green
-        $currentversions = Find-Module -Name $InstalledModules.name[$startnumber..$endnumber]
+        $currentversions = Find-PSResource -Name $InstalledModules.name[$startnumber..$endnumber]
         $startnumber = $startnumber + 63
         $endnumber = $endnumber + 63
         $onlineversions = $onlineversions + $currentversions

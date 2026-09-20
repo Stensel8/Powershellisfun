@@ -10,7 +10,7 @@ function Get-MailDomainInfo {
             #Check if DnsClient-PS module is installed
             if (-not (Get-Module -Name DnsClient-PS -ListAvailable -ErrorAction SilentlyContinue)) {
                 try {
-                    Install-Module DnsClient-PS -Scope CurrentUser -Confirm:$false -Force:$true -ErrorAction Stop
+                    Install-PSResource -Name DnsClient-PS -Scope CurrentUser -Confirm:$false -TrustRepository:$true -ErrorAction Stop
                     Import-Module DnsClient-PS -ErrorAction Stop
                     Write-Host ("Installed required module DnsClient-PS, continuing...")
                 }
@@ -28,14 +28,14 @@ function Get-MailDomainInfo {
 
             #Retrieve all mail DNS records
             $autodiscoverA = (Resolve-Dns -Query "autodiscover.$($domain)" -QueryType A -NameServer $DNSserver -ErrorAction SilentlyContinue).IPAddress
-            $autodiscoverCNAME = if ((Resolve-Dns -Query "autodiscover.$($domain)" -QueryType CNAME -NameServer $DNSserver -ErrorAction SilentlyContinue).Answers) { (Resolve-Dns -Query "autodiscover.$($domain)" -QueryType CNAME -NameServer $DNSserver -ErrorAction SilentlyContinue).Answers.canonicalname.tostring() }
-            $dkim1 = (Resolve-Dns -Query "selector1._domainkey.$($domain)" -QueryType CNAME -NameServer $DNSserver -ErrorAction SilentlyContinue).AllRecords.domainname.original[0].tostring().TrimEnd('.')
-            $dkim2 = (Resolve-Dns -Query "selector2._domainkey.$($domain)" -QueryType CNAME -NameServer $DNSserver -ErrorAction SilentlyContinue).AllRecords.domainname.original[0].tostring().TrimEnd('.')
+            $autodiscoverCNAME = if ((Resolve-Dns -Query "autodiscover.$($domain)" -QueryType CNAME -NameServer $DNSserver -ErrorAction SilentlyContinue).Answers) { (Resolve-Dns -Query "autodiscover.$($domain)" -QueryType CNAME -NameServer $DNSserver -ErrorAction SilentlyContinue).Answers.canonicalname.ToString() }
+            $dkim1 = (Resolve-Dns -Query "selector1._domainkey.$($domain)" -QueryType CNAME -NameServer $DNSserver -ErrorAction SilentlyContinue).AllRecords.domainname.original[0].ToString().TrimEnd('.')
+            $dkim2 = (Resolve-Dns -Query "selector2._domainkey.$($domain)" -QueryType CNAME -NameServer $DNSserver -ErrorAction SilentlyContinue).AllRecords.domainname.original[0].ToString().TrimEnd('.')
             $dmarc = (Resolve-Dns -Query "_dmarc.$($domain)" -QueryType TXT -NameServer $DNSserver -ErrorAction SilentlyContinue).answers.escapedtext
             $dnssec = (Resolve-Dns -Query $domain -QueryType DNSKEY -ErrorAction SilentlyContinue).Answers
             $mx = (Resolve-Dns -Query $domain -QueryType MX -NameServer $DNSserver -ErrorAction SilentlyContinue).Answers.Exchange
             $spf = (Resolve-Dns -Query $domain -QueryType TXT -NameServer $DNSserver -ErrorAction SilentlyContinue).Answers.escapedtext | Select-String 'v=spf'
-            $includes = ((Resolve-Dns -Query $domain -QueryType TXT -NameServer $DNSserver -ErrorAction SilentlyContinue).Answers.escapedtext | Select-String 'v=spf').line.split(' ') | Select-String -Pattern 'Include:'
+            $includes = ((Resolve-Dns -Query $domain -QueryType TXT -NameServer $DNSserver -ErrorAction SilentlyContinue).Answers.escapedtext | Select-String 'v=spf').line.Split(' ') | Select-String -Pattern 'Include:'
  
             if ($dkim1.length -le 1 -and $dkim2.Length -le 1) {
                 $dkim = $errorfinding

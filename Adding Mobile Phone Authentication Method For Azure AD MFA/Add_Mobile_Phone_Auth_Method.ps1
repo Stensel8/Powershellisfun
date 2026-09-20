@@ -3,7 +3,7 @@
 if (-not ((Get-Module Microsoft.Graph.Authentication, Microsoft.Graph.Identity.Signins, Microsoft.Graph.Users -ListAvailable).count -ge 3)) {
     Write-Warning ("One or more required modules were not found, installing now...")
     try {
-        Install-Module Microsoft.Graph.Authentication, Microsoft.Graph.Identity.Signins, Microsoft.Graph.Users -Confirm:$false -SkipPublisherCheck -Scope CurrentUser -ErrorAction Stop
+        Install-PSResource -Name Microsoft.Graph.Authentication, Microsoft.Graph.Identity.Signins, Microsoft.Graph.Users -Confirm:$false -TrustRepository:$true -Scope CurrentUser -ErrorAction Stop
     }
     catch {
         Write-Warning ("Error installing required modules, exiting...")

@@ -2,7 +2,7 @@
 $url = "https://support.microsoft.com/en-us/windows/windows-themes-94880287-6046-1d35-6d2f-35dee759701e"
 
 # Fetch the HTML content of the page
-$response = Invoke-WebRequest -Uri $url -UseBasicParsing
+$response = Invoke-WebRequest -Uri $url
 
 # Extract all links ending with .themepack or .deskthemepack
 $themeLinks = ($response.Links | Where-Object { $_.href -match "\.themepack$" -or $_.href -match "\.deskthemepack$" }).href

@@ -1,14 +1,14 @@
 #Variables
 $OS = Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object Caption, Version
 $CPU = $((Get-CimInstance -ClassName Win32_Processor).name)
-$Disks = foreach ($disk in Get-CimInstance -Class win32_logicaldisk) {
+$Disks = foreach ($disk in Get-CimInstance -ClassName Win32_LogicalDisk) {
   [PSCustomObject]@{
     Drive = $disk.DeviceID
     Total = [math]::Round($disk.Size / 1GB, 2)
     Free  = [math]::Round($disk.FreeSpace / 1GB, 2) 
   }
 }
-$Memory = "$(Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | ForEach-Object {"{0:N2}" -f ([math]::round(($_.Sum/1GB),2))})Gb/$([math]::round((Get-CIMInstance Win32_OperatingSystem).FreePhysicalMemory / 1024 / 1024, 2))Gb"
+$Memory = "$(Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | ForEach-Object {"{0:N2}" -f ([math]::round(($_.Sum/1GB),2))})Gb/$([math]::round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory / 1024 / 1024, 2))Gb"
 $Processes = (Get-Process).count
 $Networkadapters = foreach ($adapter in Get-NetAdapter | Where-Object Status -eq Up | Sort-Object Name, Type) {
   foreach ($ipinterface in Get-NetIPAddress | Where-Object InterfaceAlias -eq $adapter.Name) {

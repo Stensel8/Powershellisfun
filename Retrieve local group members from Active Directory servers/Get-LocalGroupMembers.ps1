@@ -26,7 +26,7 @@ function Get-LocalGroupMembers {
         
     #Using $ComputerNameFilter
     if ($ComputerNameFilter) {
-        $servers = Get-ADComputer -Filter { (OperatingSystem -like 'Windows Server*') -and (PrimaryGroupID -ne '516') -and (Enabled -eq $TRUE) } -Properties LastLogonDate `
+        $servers = Get-ADComputer -Filter '(OperatingSystem -like "Windows Server*") -and (PrimaryGroupID -ne "516") -and (Enabled -eq $true)' -Properties LastLogonDate `
         | Where-Object Name -Match $ComputerNameFilter `
         | Where-Object LastLogonDate -gt (Get-Date).AddDays(-31) `
         | Sort-Object Name
@@ -34,7 +34,7 @@ function Get-LocalGroupMembers {
 
     #Using OUfilter
     if ($OUfilter) {
-        $servers = Get-ADComputer -Filter { (OperatingSystem -like 'Windows Server*') -and (PrimaryGroupID -ne '516') -and (Enabled -eq $TRUE) } -Properties LastLogonDate `
+        $servers = Get-ADComputer -Filter '(OperatingSystem -like "Windows Server*") -and (PrimaryGroupID -ne "516") -and (Enabled -eq $true)' -Properties LastLogonDate `
         | Where-Object DistinguishedName -Match $OUfilter `
         | Where-Object LastLogonDate -gt (Get-Date).AddDays(-31) `
         | Sort-Object Name
@@ -42,7 +42,7 @@ function Get-LocalGroupMembers {
 
     #Without a Name or OU filter
     if (-not $OUfilter -and -not $ComputerNameFilter) {
-        $servers = Get-ADComputer -Filter { (OperatingSystem -like 'Windows Server*') -and (PrimaryGroupID -ne '516') -and (Enabled -eq $TRUE) } -Properties LastLogonDate -ErrorAction Stop `
+        $servers = Get-ADComputer -Filter '(OperatingSystem -like "Windows Server*") -and (PrimaryGroupID -ne "516") -and (Enabled -eq $true)' -Properties LastLogonDate -ErrorAction Stop `
         | Where-Object LastLogonDate -gt (Get-Date).AddDays(-31) `
         | Sort-Object Name
     }
@@ -50,7 +50,7 @@ function Get-LocalGroupMembers {
     #From specified filename
     if ($FileName) {
         try {
-            $servers = get-content -Path $FileName -ErrorAction Stop
+            $servers = Get-Content -Path $FileName -ErrorAction Stop
         }
         catch {
             Write-Warning ("Error accessing/reading {0}. Exiting" -f $FileName)
@@ -154,7 +154,7 @@ function Get-LocalGroupMembers {
                 #Install ImportExcel module if needed
                 if (-not (Get-Module -ListAvailable | Where-Object Name -Match ImportExcel)) {
                     Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
-                    Install-Module ImportExcel -Scope CurrentUser -Force:$true
+                    Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true
                     Import-Module ImportExcel
                 }
 

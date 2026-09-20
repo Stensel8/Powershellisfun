@@ -18,7 +18,7 @@ $DesktopPath = [Environment]::GetFolderPath("Desktop")
 $programs.GetEnumerator() | ForEach-Object {
     if (Test-Path -Path $_.Value) {
         if (-not (Test-Path -Path "$($DesktopPath)\$($_.Key).lnk") -and -not (Test-Path -Path "C:\Users\Public\Desktop\$($_.Key).lnk")) {
-            write-host ("Shortcut for {0} not found in {1}, creating it now..." -f $_.Key, $_.Value)
+            Write-Host ("Shortcut for {0} not found in {1}, creating it now..." -f $_.Key, $_.Value)
             $shortcut = "$($DesktopPath)\$($_.Key).lnk"
             $target = $_.Value
             $description = $_.Key
