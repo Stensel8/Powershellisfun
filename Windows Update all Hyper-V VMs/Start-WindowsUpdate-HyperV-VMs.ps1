@@ -41,13 +41,15 @@ foreach ($VM in Hyper-V\Get-VM $VMs | Sort-Object Name) {
     try {
         Invoke-Command -VMName $VM.Name -Credential $AdminCredential -ScriptBlock {
             Set-ExecutionPolicy Bypass
-            if (-not (Get-PackageProvider -Name Nuget | Where-Object Version -GT 2.8.5.201)) { 
+            #This runs inside a freshly installed guest with Windows PowerShell 5.1 only, which ships neither
+            #the NuGet provider nor PSResourceGet, so bootstrapping with Install-Module is deliberate here
+            if (-not (Get-PackageProvider -Name NuGet -ErrorAction SilentlyContinue | Where-Object Version -GT 2.8.5.201)) { 
                 Write-Host ("Installing NuGet provider") -ForegroundColor Green
                 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Confirm:$false -Force:$true | Out-Null
             }
             if (-not (Get-Module -Name PSWindowsUpdate -ListAvailable)) {
                 Write-Host ("Installing PSWindowsUpdate module") -ForegroundColor Green
-                Install-Module PSWindowsUpdate -Scope CurrentUser -AllowClobber -Force                
+                Install-Module -Name PSWindowsUpdate -Scope CurrentUser -AllowClobber:$true -Force:$true -Confirm:$false
             }
             Import-Module PSWindowsUpdate
             Write-Host ("Installing Update(s) if any... System will reboot afterwards if needed!") -ForegroundColor Green

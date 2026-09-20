@@ -2,6 +2,8 @@
 Start-Transcript C:\users\wdagutilityaccount\desktop\Installing.txt
 $progressPreference = 'silentlyContinue'
 Write-Information "Downloading WinGet and its dependencies..."
+#A fresh Windows Sandbox only has Windows PowerShell 5.1, which ships neither the NuGet provider nor
+#PSResourceGet, so bootstrapping with Install-PackageProvider and Install-Module is deliberate here
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force:$true -Verbose
 Install-Module Microsoft.WinGet.Client -Force:$true -Confirm:$false -Verbose
 Import-Module Microsoft.WinGet.Client -Verbose

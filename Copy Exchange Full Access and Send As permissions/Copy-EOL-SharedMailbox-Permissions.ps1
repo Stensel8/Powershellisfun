@@ -12,7 +12,7 @@ if (Get-Module -Name ExchangeOnlineManagement -ListAvailable) {
 else {
     Write-Host ("Exchange Online PowerShell module was not found, installing and continuing script") -ForegroundColor Green
     try {
-        Install-Module -Name ExchangeOnlineManagement -Scope CurrentUser -Force:$true -Confirm:$false -ErrorAction Stop
+        Install-PSResource -Name ExchangeOnlineManagement -Scope CurrentUser -TrustRepository:$true -Confirm:$false -ErrorAction Stop
     }
     catch {
         Write-Warning ("Error installing Exchange Online PowerShell Module, exiting...")

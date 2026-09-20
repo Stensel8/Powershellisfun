@@ -94,10 +94,10 @@ function Resolve-CmdletsToModules {
         }
         catch {
             Write-Warning ("Could not find information for {0} in your local modules, trying online..." -f $cmdlet)
-            $cmdletinfo = Find-Module -Command $cmdlet
+            $cmdletinfo = Find-PSResource -CommandName $cmdlet
             Write-Host ("Checking {0} online" -f $cmdlet) -ForegroundColor Green
             if ($cmdletinfo) {
-                foreach ($info in $cmdletinfo) {
+                foreach ($info in $cmdletinfo.ParentResource) {
                     [PSCustomObject]@{
                         CmdletName                                = $cmdlet
                         CommandType                               = $info.Type
@@ -145,7 +145,7 @@ function Resolve-CmdletsToModules {
                 #Install ImportExcel module if needed
                 if (-not (Get-Module -Name importexcel -ListAvailable)) {
                     Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
-                    Install-Module ImportExcel -Scope CurrentUser -Force:$true
+                    Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true
                     Import-Module ImportExcel
                 }
                 Import-Module ImportExcel

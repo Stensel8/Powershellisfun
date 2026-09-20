@@ -73,8 +73,8 @@ function Get-ADDomaininfo {
         else {
             "Not Enabled"
         }
-        "Azure AD Connect Server(s)"   = if (Get-ADUser -LDAPFilter "(description=*configured to synchronize to tenant*)" -Properties description | ForEach-Object { $_.description.SubString(142, $_.description.IndexOf(" ", 142) - 142) }) {
-            Get-ADUser -LDAPFilter "(description=*configured to synchronize to tenant*)" -Properties description | ForEach-Object { $_.description.SubString(142, $_.description.IndexOf(" ", 142) - 142) -join ", " }
+        "Azure AD Connect Server(s)"   = if (Get-ADUser -LDAPFilter "(description=*configured to synchronize to tenant*)" -Properties description | ForEach-Object { $_.description.Substring(142, $_.description.IndexOf(" ", 142) - 142) }) {
+            Get-ADUser -LDAPFilter "(description=*configured to synchronize to tenant*)" -Properties description | ForEach-Object { $_.description.Substring(142, $_.description.IndexOf(" ", 142) - 142) -join ", " }
         }
         else {
             "None"

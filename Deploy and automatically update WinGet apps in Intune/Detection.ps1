@@ -20,14 +20,14 @@ $software = & 'C:\Program Files\PowerShell\7\pwsh.exe' -MTA -Command {
     #Import the Microsoft.WinGet.Client module, install it if it's not found or update if outdated
     try {
         if (Get-Module Microsoft.WinGet.Client -ListAvailable) {
-            if ((Get-Module Microsoft.WinGet.Client -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1).Version -lt (Find-Module Microsoft.WinGet.Client).Version) {
-                Update-Module Microsoft.WinGet.Client -Force:$true -Confirm:$false -Scope AllUsers
+            if ((Get-Module Microsoft.WinGet.Client -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1).Version -lt (Find-PSResource -Name Microsoft.WinGet.Client).Version) {
+                Update-PSResource -Name Microsoft.WinGet.Client -Force:$true -Confirm:$false -Scope AllUsers -TrustRepository:$true
             }
         }
         Import-Module Microsoft.WinGet.Client -ErrorAction Stop
     }
     catch {
-        Install-Module Microsoft.WinGet.Client -Force:$true -Confirm:$false -Scope AllUsers
+        Install-PSResource -Name Microsoft.WinGet.Client -Confirm:$false -Scope AllUsers -TrustRepository:$true
         Import-Module Microsoft.WinGet.Client
     }
     #Repair/Install WinGetPackagemanager if not found

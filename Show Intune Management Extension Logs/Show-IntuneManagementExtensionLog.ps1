@@ -13,7 +13,7 @@ function Get-IntuneLogContent {
     $LogTotal = foreach ($line in Get-Content -Path $Filepath) {
         #Get Time-stamp
         try {
-            $time = (Select-String 'time=(.*)' -InputObject $line).Matches.groups[0].value.split('"')[1]
+            $time = (Select-String 'time=(.*)' -InputObject $line).Matches.groups[0].value.Split('"')[1]
         }
         catch {
             $time = 'n.a.'
@@ -21,7 +21,7 @@ function Get-IntuneLogContent {
 
         #Get date
         try {
-            $date = (Select-String 'date=(.*)' -InputObject $line).Matches.groups[0].value.split('"')[1]
+            $date = (Select-String 'date=(.*)' -InputObject $line).Matches.groups[0].value.Split('"')[1]
         }
         catch {
             $date = 'n.a.'
@@ -37,7 +37,7 @@ function Get-IntuneLogContent {
 
         #Get the component value
         try {
-            $component = (Select-String 'component=(.*)' -InputObject $line).matches.groups[0].value.split('"')[1]
+            $component = (Select-String 'component=(.*)' -InputObject $line).matches.groups[0].value.Split('"')[1]
         }
         catch {
             $component = 'n.a'

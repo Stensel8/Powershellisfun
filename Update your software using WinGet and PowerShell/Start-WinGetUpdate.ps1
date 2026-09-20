@@ -103,7 +103,7 @@ function Start-WinGetUpdate {
         # Checking if the installed version of WinGet are the same as the latest version of WinGet
         if ($CheckWinGet -le $GitHubInfo.Tag) {
             Write-Output "WinGet has a newer version $($GitHubInfo.Tag), downloading and installing it..."
-            Invoke-WebRequest -UseBasicParsing -Uri $GitHubInfo.DownloadUrl -OutFile $GitHubInfo.OutFile
+            Invoke-WebRequest -Uri $GitHubInfo.DownloadUrl -OutFile $GitHubInfo.OutFile
 
             Write-Output "Installing version $($GitHubInfo.Tag) of WinGet..."
             Add-AppxPackage $($GitHubInfo.OutFile)
@@ -117,7 +117,7 @@ function Start-WinGetUpdate {
     if ($null -eq $CheckVCLibs) {
         try {
             Write-Output "Microsoft.VCLibs is not installed, downloading and installing it now..."
-            Invoke-WebRequest -UseBasicParsing -Uri $VCLibsUrl -OutFile $VCLibsOutFile
+            Invoke-WebRequest -Uri $VCLibsUrl -OutFile $VCLibsOutFile
 
             Add-AppxPackage $VCLibsOutFile
         }

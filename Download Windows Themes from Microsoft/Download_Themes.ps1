@@ -9,7 +9,7 @@ $URL = "https://support.microsoft.com/en-us/windows/windows-themes-94880287-6046
 $ProgressPreference = 'SilentlyContinue'
 
 # Fetch the HTML content of the page
-$Response = Invoke-WebRequest -Uri $URL -UseBasicParsing
+$Response = Invoke-WebRequest -Uri $URL
 
 # Extract all links ending with .themepack or .deskthemepack
 $ThemeLinks = ($Response.Links | Where-Object { $_.href -match "\.themepack$" -or $_.href -match "\.deskthemepack$" }).href
@@ -33,7 +33,7 @@ foreach ($url in $UniqueLinks) {
     $FileName = Split-Path -Path $URL -Leaf
     $DestinationPath = Join-Path -Path $destinationFolder -ChildPath $FileName
     try {
-        Invoke-WebRequest -Uri $URL -OutFile $destinationPath -UseBasicParsing -ErrorAction Stop
+        Invoke-WebRequest -Uri $URL -OutFile $destinationPath -ErrorAction Stop
         Write-Host ("Downloading {0} to {1}" -f $FileName, $DestinationPath) -ForegroundColor Green
     }
     catch {

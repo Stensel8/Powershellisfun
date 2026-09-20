@@ -19,7 +19,7 @@ if ($modules.count -gt 0) {
             Write-Host ("`t [{0}/{1}] Processing cmdlet/function {2}" -f $cmdletcounter, $cmdlets.count, $cmdlet.name)
             #Retrieve Synopsis (Remove Read-Only, Read-Wite, Nullable and Supports $expand if found) and URL for the cmdlet/function
             $help = Get-Help $cmdlet
-            $synopsis = $help.Synopsis.replace('Read-only.', '').replace('Read-Write.', '').replace('Nullable.', '').replace('Supports $expand.', '').replace('Not nullable.', '').replace('\r', " ")
+            $synopsis = $help.Synopsis.Replace('Read-only.', '').Replace('Read-Write.', '').Replace('Nullable.', '').Replace('Supports $expand.', '').Replace('Not nullable.', '').Replace('\r', " ")
             $synopsis = $synopsis -replace '\n', ' ' -creplace '(?m)^\s*\r?\n', ''
             #Set variable for non matching cmdlet name and synopsis content
             $url = $help.relatedLinks.navigationLink.uri
@@ -67,7 +67,7 @@ if ($total.count -gt 0) {
             #Install ImportExcel module if needed
             if (-not (Get-Module -Name importexcel -ListAvailable)) {
                 Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
-                Install-Module ImportExcel -Scope CurrentUser -Force:$true
+                Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true
                 Import-Module ImportExcel
             }
             Import-Module ImportExcel

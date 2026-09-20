@@ -31,7 +31,7 @@ if ($Filename) {
     if (-not (Get-Module -ListAvailable -Name ImportExcel)) {
         Write-Warning ("The ImportExcel module was not found on the system, installing now...")
         try {
-            Install-Module -Name ImportExcel -SkipPublisherCheck -Force:$true -Confirm:$false -Scope CurrentUser -ErrorAction Stop
+            Install-PSResource -Name ImportExcel -TrustRepository:$true -Confirm:$false -Scope CurrentUser -ErrorAction Stop
             Import-Module -Name ImportExcel -Scope Local -ErrorAction Stop
             Write-Host ("Successfully installed the ImportExcel module, continuing..") -ForegroundColor Green
         }

@@ -12,7 +12,7 @@ if ($host.Version.Major -ge 7) {
     catch {
         Write-Warning ("Microsoft.PowerShell.ConsoleGuiTools module was not installed, installing now...")
         try {
-            Install-Module Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -ErrorAction Stop
+            Install-PSResource -Name Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
         }
         catch {
             Write-Warning ("Error installing Microsoft.PowerShell.ConsoleGuiTools module, exiting...")
@@ -94,7 +94,7 @@ if ($File) {
         #Install ImportExcel module if needed
         if (-not (Get-Module -Name importexcel -ListAvailable)) {
             Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
-            Install-Module ImportExcel -Scope CurrentUser -Force:$true -ErrorAction Stop
+            Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
             Import-Module ImportExcel -ErrorAction Stop
         }
     }

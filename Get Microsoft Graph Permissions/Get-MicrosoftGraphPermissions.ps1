@@ -12,7 +12,7 @@ function Get-MicrosoftGraphPermissions {
         if ($host.Version.Major -eq 7) {
             if (-not (Get-Module Microsoft.PowerShell.ConsoleGuiTools -ListAvailable)) {
                 try {
-                    Install-Module Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -ErrorAction Stop
+                    Install-PSResource -Name Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
                     Import-Module Microsoft.PowerShell.ConsoleGuiTools -ErrorAction Stop
                     Write-Host ('Installed missing PowerShell Module Microsoft.PowerShell.ConsoleGuiTools which is needed for ConsoleGridView output') -ForegroundColor Green
                 }
@@ -137,7 +137,7 @@ function Get-MicrosoftGraphPermissions {
                 if ($Filename.EndsWith('xlsx')) {
                     if (-not (Get-Module ImportExcel -ListAvailable)) {
                         try {
-                            Install-Module ImportExcel -Scope CurrentUser -ErrorAction Stop
+                            Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
                             Import-Module ImportExcel -ErrorAction Stop
                             Write-Host ('Installed missing PowerShell Module ImportExcel which is needed for XLSX output') -ForegroundColor Green
                         }

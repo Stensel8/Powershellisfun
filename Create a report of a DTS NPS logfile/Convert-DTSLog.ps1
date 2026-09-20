@@ -130,7 +130,7 @@ function Convert-DTSLog {
             Write-Host ("`nChecking if ImportExcel PowerShell module is installed...") -ForegroundColor Green
             if (-not (Get-Module -ListAvailable | Where-Object Name -Match ImportExcel)) {
                 Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
-                Install-Module ImportExcel -Scope CurrentUser -Force:$true
+                Install-PSResource -Name ImportExcel -Scope CurrentUser -TrustRepository:$true
                 Import-Module ImportExcel
             }
             #Export results to path

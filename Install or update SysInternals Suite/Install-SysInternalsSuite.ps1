@@ -42,7 +42,7 @@ function Install-SysInternalsSuite {
             [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
         }
         $ProgressPreference = "SilentlyContinue"
-        Invoke-WebRequest -Uri https://download.sysinternals.com/files/SysinternalsSuite.zip -OutFile $ENV:TEMP\SysInternalsSuite.zip -UseBasicParsing -ErrorAction Stop
+        Invoke-WebRequest -Uri https://download.sysinternals.com/files/SysinternalsSuite.zip -OutFile $ENV:TEMP\SysInternalsSuite.zip -ErrorAction Stop
         Write-Host ("Downloading latest version to {0}\SysinternalsSuite.zip" -f $env:temp) -ForegroundColor Green
         Expand-Archive -LiteralPath $ENV:TEMP\SysInternalsSuite.zip -DestinationPath $env:temp\SysInternalsSuite -Force:$true -ErrorAction Stop
         Write-Host ("Extracting files to {0}\SysInternalsSuite" -f $env:temp) -ForegroundColor Green

@@ -51,7 +51,7 @@ if ((Test-Path -Path $env:ProgramData\Liquit\Agent\Agent.json) -and (Test-Path -
         Copy-Item $env:ProgramData\Liquit\Agent\Agent.json -Destination $MappedFolder -Force:$true -Confirm:$false -ErrorAction Stop
         Copy-Item $env:ProgramData\Liquit\Agent\AgentRegistration.cer -Destination $MappedFolder -Force:$true -Confirm:$false -ErrorAction Stop
         $ProgressPreference = 'SilentlyContinue'
-        Invoke-WebRequest https://download.liquit.com/extra/Bootstrapper/AgentBootstrapper-Win-2.1.0.2.exe -UseBasicParsing -OutFile "$($MappedFolder)\AgentBootstrapper-Win.exe" -ErrorAction Stop
+        Invoke-WebRequest https://download.liquit.com/extra/Bootstrapper/AgentBootstrapper-Win-2.1.0.2.exe -OutFile "$($MappedFolder)\AgentBootstrapper-Win.exe" -ErrorAction Stop
         $ProgressPreference = 'Continue'
     }
     catch {

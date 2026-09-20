@@ -6,21 +6,21 @@ $wlanprofiles = (netsh wlan show profiles) | Select-String ': '
 if ($null -ne $wlanprofiles) {
     $passwords = foreach ($wlanprofile in $wlanprofiles | Sort-Object) {
         try {
-            $profile_information = netsh wlan show profile name="$($wlanprofile.ToString().Split(':')[1].SubString(1))" key=clear
-            Write-Host ("Retrieving password for SSID {0}" -f $wlanprofile.ToString().Split(':')[1].SubString(1)) -ForegroundColor Green
+            $profile_information = netsh wlan show profile name="$($wlanprofile.ToString().Split(':')[1].Substring(1))" key=clear
+            Write-Host ("Retrieving password for SSID {0}" -f $wlanprofile.ToString().Split(':')[1].Substring(1)) -ForegroundColor Green
             [PSCustomObject]@{
-                'SSID'                = $wlanprofile.ToString().Split(':')[1].SubString(1)
-                'Authentication Type' = ($profile_information | Select-String 'Authentication' | Select-Object -First 1).Tostring().Split(':')[1].Substring(1)
-                'Password'            = ($profile_information | Select-String 'Key Content').Tostring().Split(':')[1].Substring(1)
+                'SSID'                = $wlanprofile.ToString().Split(':')[1].Substring(1)
+                'Authentication Type' = ($profile_information | Select-String 'Authentication' | Select-Object -First 1).ToString().Split(':')[1].Substring(1)
+                'Password'            = ($profile_information | Select-String 'Key Content').ToString().Split(':')[1].Substring(1)
             }
         }
         catch {
             #If retrieving the password fails, add the reason why to $passwords in the password field
-            $authenticationtype = ($profile_information | Select-String 'Authentication' | Select-Object -First 1).Tostring().Split(':')[1].Substring(1)
-            Write-Warning ("Could not retrieve password for SSID {0}, check {1}" -f $wlanprofile.ToString().Split(':')[1].SubString(1), $output)
+            $authenticationtype = ($profile_information | Select-String 'Authentication' | Select-Object -First 1).ToString().Split(':')[1].Substring(1)
+            Write-Warning ("Could not retrieve password for SSID {0}, check {1}" -f $wlanprofile.ToString().Split(':')[1].Substring(1), $output)
             [PSCustomObject]@{
-                'SSID'                = $wlanprofile.ToString().Split(':')[1].SubString(1)
-                'Authentication Type' = ($profile_information | Select-String 'Authentication' | Select-Object -First 1).Tostring().Split(':')[1].Substring(1)
+                'SSID'                = $wlanprofile.ToString().Split(':')[1].Substring(1)
+                'Authentication Type' = ($profile_information | Select-String 'Authentication' | Select-Object -First 1).ToString().Split(':')[1].Substring(1)
                 'Password'            = "Could not retrieve password for the SSID because it's an $($authenticationtype) network"
             }
         }

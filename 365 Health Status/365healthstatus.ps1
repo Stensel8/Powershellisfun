@@ -5,7 +5,7 @@ try {
     Connect-MgGraph -ClientId d52e60f2-xxxx-4cd3-xxxx-27b7da3xxxx -TenantId 9f7xxxa0-xxxx-454c-8500-04df1f0xxxx -CertificateThumbprint BFFE739D4B8C272DF8BF0FF9Fxxxxxxxxx -ContextScope CurrentUser -Environment Global | Out-Null
 }
 catch {
-    Install-Module Microsoft.Graph.Authentication
+    Install-PSResource -Name Microsoft.Graph.Authentication -TrustRepository:$true
     Connect-MgGraph -ClientId d52e60f2-xxxx-4cd3-xxxx-27b7da3xxxx -TenantId 9f7xxxa0-xxxx-454c-8500-04df1f0xxxx -CertificateThumbprint BFFE739D4B8C272DF8BF0FF9Fxxxxxxxxx -ContextScope CurrentUser -Environment Global | Out-Null
 }
  
@@ -14,7 +14,7 @@ try {
     Import-Module Microsoft.Graph.Devices.ServiceAnnouncement -ErrorAction Stop    
 }
 catch {
-    Install-Module Microsoft.Graph.Devices.ServiceAnnouncement
+    Install-PSResource -Name Microsoft.Graph.Devices.ServiceAnnouncement -TrustRepository:$true
 }
  
 #Display non-resolved Issues sorted on StartDateTime, display error when unable to retrieve

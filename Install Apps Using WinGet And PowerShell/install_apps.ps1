@@ -106,8 +106,8 @@ $json = Get-Content "$($PSScriptRoot)\Install_apps.json" | ConvertFrom-Json
 if ($Apps -or $MicrosftVCRuntime -or $All) {
     if (!(Get-AppxPackage -Name Microsoft.Winget.Source)) {
         Write-Host ("Winget was not found and installing now") -ForegroundColor Yellow
-        Invoke-WebRequest -Uri https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx -OutFile $ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx -UseBasicParsing
-        Invoke-WebRequest -Uri https://aka.ms/getwinget -OutFile $ENV:TEMP\winget.msixbundle -UseBasicParsing
+        Invoke-WebRequest -Uri https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx -OutFile $ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx
+        Invoke-WebRequest -Uri https://aka.ms/getwinget -OutFile $ENV:TEMP\winget.msixbundle
         Add-AppxPackage $ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx -ErrorAction SilentlyContinue
         Add-AppxPackage -Path $ENV:TEMP\winget.msixbundle -ErrorAction SilentlyContinue
     }
@@ -125,7 +125,7 @@ if ($MicrosftVCRuntime -or $All) {
         Select-Object @{Name = 'Name'; Expression = { $_.DisplayName } }
     Foreach ($App in $json.MicrosftVCRuntime) {
         Write-Host ("Checking if {0} is already installed..." -f $App)
-        if (!($CurrentVC | Select-String $App.split('+')[2].SubString(0, 4) | Select-String $App.split('-')[1])) {
+        if (!($CurrentVC | Select-String $App.Split('+')[2].Substring(0, 4) | Select-String $App.Split('-')[1])) {
             Write-Host ("{0} was not found and installing now" -f $App) -ForegroundColor Yellow
             winget.exe install $App --silent --force --source winget --accept-package-agreements --accept-source-agreements
         }
@@ -165,7 +165,7 @@ if ($SCCMTools -or $All) {
     Write-Host ("Checking if System Center 2012 R2 Configuration Manager Toolkit is already installed") -ForegroundColor Green
     if (!(Test-Path 'C:\Program Files (x86)\ConfigMgr 2012 Toolkit R2')) {
         Write-Host ("SCCM 2012 R2 Toolkit was not found and installing now") -ForegroundColor Yellow
-        Invoke-WebRequest -Uri https://download.microsoft.com/download/5/0/8/508918E1-3627-4383-B7D8-AA07B3490D21/ConfigMgrTools.msi -UseBasicParsing -OutFile $ENV:TEMP\ConfigMgrTools.msi
+        Invoke-WebRequest -Uri https://download.microsoft.com/download/5/0/8/508918E1-3627-4383-B7D8-AA07B3490D21/ConfigMgrTools.msi -OutFile $ENV:TEMP\ConfigMgrTools.msi
         msiexec.exe /i $ENV:TEMP\ConfigMgrTools.msi /qn    
     }
 }
@@ -175,7 +175,7 @@ if ($SysInternalsSuite -or $All) {
     Write-Host ("Checking if SysInternals Suite is present") -ForegroundColor Green
     if (!(Test-Path 'C:\Program Files (x86)\SysInterals Suite')) {
         Write-Host ("SysInternalsSuite was not found and installing now") -ForegroundColor Yellow
-        Invoke-WebRequest -Uri https://download.sysinternals.com/files/SysinternalsSuite.zip -OutFile $ENV:TEMP\SysInternalsSuite.zip -UseBasicParsing
+        Invoke-WebRequest -Uri https://download.sysinternals.com/files/SysinternalsSuite.zip -OutFile $ENV:TEMP\SysInternalsSuite.zip
         Expand-Archive -LiteralPath $ENV:TEMP\SysInternalsSuite.zip -DestinationPath 'C:\Program Files (x86)\SysInterals Suite'
         $OldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).Path
         $NewPath = $OldPath + ';C:\Program Files (x86)\SysInterals Suite\'
@@ -188,7 +188,7 @@ if ($IntuneWinAppUtil -or $All) {
     Write-Host ("Checking if IntuneWinAppUtil Suite is present") -ForegroundColor Green
     if (!(Test-Path 'c:\windows\system32\IntuneWinAppUtil.exe')) {
         Write-Host ("IntuneWinAppUtil was not found and installing now") -ForegroundColor Yellow
-        Invoke-WebRequest -Uri https://github.com/microsoft/Microsoft-Win32-Content-Prep-Tool/raw/master/IntuneWinAppUtil.exe -OutFile c:\windows\system32\intunewinapputil.exe -UseBasicParsing
+        Invoke-WebRequest -Uri https://github.com/microsoft/Microsoft-Win32-Content-Prep-Tool/raw/master/IntuneWinAppUtil.exe -OutFile c:\windows\system32\intunewinapputil.exe
     }
 }
  
@@ -213,13 +213,13 @@ if ($PowerShellModules -or $All) {
         [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
     }
  
-    Set-PSRepository PSGallery -InstallationPolicy Trusted
+    Set-PSResourceRepository -Name PSGallery -Trusted:$true -Confirm:$false
  
     Foreach ($Module in $json.PowerShellModules) {
         Write-Host ("Checking if the {0} is already installed..." -f $Module)
         if (!(Get-Module $Module -ListAvailable)) {
             Write-Host ("{0} PowerShell Module was not found and installing now" -f $Module) -ForegroundColor Yellow
-            Install-Module -Name $Module -Scope AllUsers -Force:$True -AllowClobber:$True
+            Install-PSResource -Name $Module -Scope AllUsers -TrustRepository:$True
         }
     }
 }
@@ -254,18 +254,18 @@ if ($PowerShellProfile -or $All) {
 if ($PowerShellModulesUpdate -or $All) {
     #Update PowerShell Modules if needed
     Write-Host ("Checking for older versions of PowerShell Modules and removing those if present") -ForegroundColor Green
-    Set-PSRepository PSGallery -InstallationPolicy Trusted
+    Set-PSResourceRepository -Name PSGallery -Trusted:$True -Confirm:$false
  
-    Foreach ($Module in Get-InstalledModule | Select-Object Name) {
+    Foreach ($Module in Get-InstalledPSResource | Select-Object Name -Unique) {
         Write-Host ("Checking for older versions of the {0} PowerShell Module" -f $Module.Name)
-        $AllVersions = Get-InstalledModule -Name $Module.Name -AllVersions -ErrorAction:SilentlyContinue
-        $AllVersions = $AllVersions | Sort-Object PublishedDate -Descending
+        $AllVersions = Get-InstalledPSResource -Name $Module.Name -ErrorAction:SilentlyContinue
+        $AllVersions = $AllVersions | Sort-Object Version -Descending
         $MostRecentVersion = $AllVersions[0].Version
         if ($AllVersions.Count -gt 1 ) {
             Foreach ($Version in $AllVersions) {
                 if ($Version.Version -ne $MostRecentVersion) {
                     Write-Host ("Uninstalling previous version {0} of Module {1}" -f $Version.Version, $Module.Name) -ForegroundColor Yellow
-                    Uninstall-Module -Name $Module.Name -RequiredVersion $Version.Version -Force:$True
+                    Uninstall-PSResource -Name $Module.Name -Version $Version.Version
                 }
             }
         }

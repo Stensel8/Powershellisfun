@@ -6,7 +6,7 @@ function Get-MicrosoftEndpoints {
     #Hide download progress, get current JSON url, retrieve all Endpoints and Convert it from JSON format
     $ProgressPreference = "SilentlyContinue"
     try {
-        $site = Invoke-WebRequest -Uri 'https://learn.microsoft.com/en-us/microsoft-365/enterprise/urls-and-ip-address-ranges?view=o365-worldwide' -UseBasicParsing
+        $site = Invoke-WebRequest -Uri 'https://learn.microsoft.com/en-us/microsoft-365/enterprise/urls-and-ip-address-ranges?view=o365-worldwide'
         $jsonlink = ($site.Links | Where-Object OuterHTML -match 'JSON formatted').href
     }
     catch {
@@ -15,7 +15,7 @@ function Get-MicrosoftEndpoints {
     }
 
     try {
-        $Endpoints = Invoke-WebRequest -Uri $jsonlink -ErrorAction Stop -UseBasicParsing | ConvertFrom-Json
+        $Endpoints = Invoke-WebRequest -Uri $jsonlink -ErrorAction Stop | ConvertFrom-Json
         Write-Host ("Downloading worldwide Microsoft Endpoints") -ForegroundColor Green
     }
     catch {
@@ -30,7 +30,7 @@ function Get-MicrosoftEndpoints {
             $IPaddresses = 'Not available'
         }
         else {
-            $IPaddresses = $Endpoint.ips.split(' ') -join ', '
+            $IPaddresses = $Endpoint.ips.Split(' ') -join ', '
         }
 
         #Check if TCP ports are available for the Endpoint, set to not available if not
@@ -38,7 +38,7 @@ function Get-MicrosoftEndpoints {
             $TCPPorts = 'Not available'
         }
         else {
-            $TCPPorts = $Endpoint.TCPPorts.split(',') -join ', '
+            $TCPPorts = $Endpoint.TCPPorts.Split(',') -join ', '
         }
             
         #Check if UDP ports are available for the Endpoint, set to not available if not
@@ -46,7 +46,7 @@ function Get-MicrosoftEndpoints {
             $UDPPorts = 'Not available'
         }
         else {
-            $UDPPorts = $Endpoint.udpPorts.split(',') -join ', '
+            $UDPPorts = $Endpoint.udpPorts.Split(',') -join ', '
         }
 
         #Check if there are notes for the Endpoint, set to not available if not

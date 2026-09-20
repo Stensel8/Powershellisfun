@@ -45,7 +45,7 @@ try {
     foreach ($mod in $required) {
         if (-not (Get-Module -ListAvailable -Name $mod)) {
             Write-Verbose "Installing $mod module..."
-            Install-Module $mod -Scope CurrentUser -Force -AllowClobber
+            Install-PSResource -Name $mod -Scope CurrentUser -TrustRepository:$true
         }
         Import-Module $mod -ErrorAction Stop
     }
@@ -57,9 +57,9 @@ try {
 
     # Download and cache the SKU reference CSV from Microsoft Docs, which contains mappings of SKUs and service plans to friendly names. This is needed because Graph returns only internal IDs for SKUs and service plans.
     Write-Verbose 'Downloading SKU reference CSV...'
-    [string]$csvLink = (Invoke-WebRequest -DisableKeepAlive -Uri 'https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference' -UseBasicParsing).Links.href -match '\.csv$'
+    [string]$csvLink = (Invoke-WebRequest -DisableKeepAlive -Uri 'https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference').Links.href -match '\.csv$'
     $tempCsv = [IO.Path]::ChangeExtension((New-TemporaryFile).FullName, '.csv')
-    Invoke-WebRequest -Uri $csvLink -OutFile $tempCsv -UseBasicParsing
+    Invoke-WebRequest -Uri $csvLink -OutFile $tempCsv
 
     # Build lookup tables:
     #   SKU: String_Id (SkuPartNumber) -> Product_Display_Name (friendly SKU name)

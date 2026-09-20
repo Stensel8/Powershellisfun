@@ -26,7 +26,7 @@ $urls = @(
 $ProgressPreference = "SilentlyContinue"
 $totalfound = foreach ($url in $urls) {
     try {
-        $content = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
+        $content = Invoke-WebRequest -Uri $url -ErrorAction Stop
         $downloadlinks = $content.links | Where-Object { `
                 $_.'aria-label' -match 'Download' `
                 -and $_.'aria-label' -match 'VHD'
@@ -37,7 +37,7 @@ $totalfound = foreach ($url in $urls) {
         foreach ($DownloadLink in $DownloadLinks) {
             [PSCustomObject]@{
                 Name   = $DownloadLink.'aria-label'.Replace('Download ', '')
-                Tag    = $DownloadLink.'data-bi-tags'.Split('&')[3].split(';')[1]
+                Tag    = $DownloadLink.'data-bi-tags'.Split('&')[3].Split(';')[1]
                 Format = $DownloadLink.'data-bi-tags'.Split('-')[1].ToUpper()
                 Link   = $DownloadLink.href
             }
@@ -89,7 +89,7 @@ finally {
 Write-Host ("Downloading {0} to {1}..." -f $vhd.Name, $VMdir) -ForegroundColor Green
 $VHDFile = "$($VMdir)\$($VMname)" + ".vhd"
 $VMPath = (Get-VMHost).VirtualMachinePath + '\'
-Invoke-WebRequest -UseBasicParsing -Uri $vhd.Link -OutFile $VHDFile
+Invoke-WebRequest -Uri $vhd.Link -OutFile $VHDFile
  
 #Create VM with the specified values
 try {

@@ -42,7 +42,7 @@ $urls = @(
 $ProgressPreference = "SilentlyContinue"
 $totalfound = foreach ($url in $urls) {
     try {
-        $content = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop 
+        $content = Invoke-WebRequest -Uri $url -ErrorAction Stop 
         $downloadlinks = $content.links | Where-Object { `
                 $_.'aria-label' -match 'Download' `
                 -and $_.outerHTML -match 'fwlink' `
@@ -52,9 +52,9 @@ $totalfound = foreach ($url in $urls) {
         Write-Host ("Processing {0}, Found {1} Download(s)..." -f $url, $count) -ForegroundColor Green
         foreach ($DownloadLink in $DownloadLinks) {
             [PSCustomObject]@{
-                Title  = $url.split('/')[5].replace('-', ' ').replace('download ', '')
+                Title  = $url.Split('/')[5].Replace('-', ' ').Replace('download ', '')
                 Name   = $DownloadLink.'aria-label'.Replace('Download ', '')
-                Tag    = $DownloadLink.'data-bi-tags'.Split('&')[3].split(';')[1]
+                Tag    = $DownloadLink.'data-bi-tags'.Split('&')[3].Split(';')[1]
                 Format = $DownloadLink.'data-bi-tags'.Split('-')[1].ToUpper()
                 Link   = $DownloadLink.href
             }

@@ -29,7 +29,7 @@ if ($host.Version.Major -ge 7) {
     catch {
         Write-Warning ("Microsoft.PowerShell.ConsoleGuiTools module was not installed, installing now...")
         try {
-            Install-Module Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -ErrorAction Stop
+            Install-PSResource -Name Microsoft.PowerShell.ConsoleGuiTools -Scope CurrentUser -TrustRepository:$true -ErrorAction Stop
         }
         catch {
             Write-Warning ("Error installing Microsoft.PowerShell.ConsoleGuiTools module, exiting...")
