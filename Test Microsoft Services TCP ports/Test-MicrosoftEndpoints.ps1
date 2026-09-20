@@ -12,7 +12,7 @@ function Test-MicrosoftEndpoints {
     $ProgressPreference = "SilentlyContinue"
     try {
         $site = Invoke-WebRequest -Uri 'https://learn.microsoft.com/en-us/microsoft-365/enterprise/urls-and-ip-address-ranges?view=o365-worldwide' -UseBasicParsing
-        $jsonlink = ($site.Links | where-Object OuterHTML -match 'JSON formatted').href
+        $jsonlink = ($site.Links | Where-Object OuterHTML -match 'JSON formatted').href
     }
     catch {
         Write-Warning ("Error downloading JSON file, please check if https://learn.microsoft.com/en-us/microsoft-365/enterprise/urls-and-ip-address-ranges?view=o365-worldwide is accessible")
@@ -102,7 +102,7 @@ function Test-MicrosoftEndpoints {
         }
     }
 
-    #Output results to Out-Gridview or CSV
+    #Output results to Out-GridView or CSV
     if (-not $CSVPath) {
         Write-Host ("Output results to Out-GridView `nDone!") -ForegroundColor Green
         $total | Sort-Object Url, TCPport | Out-GridView -Title 'Microsoft Endpoints Test results'

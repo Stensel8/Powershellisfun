@@ -18,10 +18,10 @@ foreach ($printer in $printers) {
 
 #If all printers are installed, exit 0
 if ($numberofprintersfound -eq $printers.count) {
-    write-host "($numberofprintersfound) printers were found"
+    Write-Host "($numberofprintersfound) printers were found"
     exit 0
 }
 else {
-    write-host "Not all $($printers.count) printers were found"
+    Write-Host "Not all $($printers.count) printers were found"
     exit 1
 }

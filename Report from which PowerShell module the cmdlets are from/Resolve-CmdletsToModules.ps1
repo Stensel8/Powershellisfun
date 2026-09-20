@@ -19,7 +19,7 @@ function Resolve-CmdletsToModules {
         try {
             $scriptcontents = Get-Clipboard -ErrorAction Stop
             if ($scriptcontents.Length -gt 0) {
-                write-host ("The Clipboard content is valid, continuing...") -ForegroundColor Green
+                Write-Host ("The Clipboard content is valid, continuing...") -ForegroundColor Green
             }
             else {
                 Write-Warning ("Could not read Clipboard contents correctly, picture in Clipboard perhaps? Exiting...")
@@ -40,7 +40,7 @@ function Resolve-CmdletsToModules {
     #Check if specified file is correct and read contents of file in $scriptcontents
     if ($scriptfile) {
         if (Test-Path -Path $scriptfile) {
-            write-host ("The specified file {0} is valid, continuing..." -f $scriptfile) -ForegroundColor Green
+            Write-Host ("The specified file {0} is valid, continuing..." -f $scriptfile) -ForegroundColor Green
             $scriptcontents = Get-Content -Path $scriptfile
         }
         else {
@@ -78,7 +78,7 @@ function Resolve-CmdletsToModules {
     #Search for the module(s) that the cmdlet is from
     $results = foreach ($cmdlet in ($cmdletstocheck | Sort-Object -Property * -Unique).Cmdlet | Sort-Object) {
         try {
-            $cmdletinfo = Get-Command -Name $cmdlet -Erroraction Stop
+            $cmdletinfo = Get-Command -Name $cmdlet -ErrorAction Stop
             Write-Host ("Checking {0} locally" -f $cmdlet) -ForegroundColor Green
             foreach ($info in $cmdletinfo) {
                 [PSCustomObject]@{

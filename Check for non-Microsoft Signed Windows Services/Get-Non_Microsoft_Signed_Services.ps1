@@ -52,11 +52,11 @@ $total = $null
 $total = foreach ($Computer in $ComputerName) {
     try {
         $count = 0
-        $services = Get-WmiObject -Class Win32_Service -ComputerName $Computer -ErrorAction Stop | Select-Object Displayname, Name, PathName, State, StartName, StartMode | Sort-Object DisplayName
+        $services = Get-CimInstance -ClassName Win32_Service -ComputerName $Computer -ErrorAction Stop | Select-Object DisplayName, Name, PathName, State, StartName, StartMode | Sort-Object DisplayName
         Write-Host ("Retrieving information for {0} services on {1}" -f $services.count, $($Computer)) -ForegroundColor Green
         foreach ($service in $services) {
             $count++
-            Write-Progress ("Checking service {0} on {1}" -f $service.Displayname, $($Computer)) -PercentComplete (($count * 100) / $services.count) -Status "$(([math]::Round((($count)/$services.count * 100),0))) %"
+            Write-Progress ("Checking service {0} on {1}" -f $service.DisplayName, $($Computer)) -PercentComplete (($count * 100) / $services.count) -Status "$(([math]::Round((($count)/$services.count * 100),0))) %"
             if ($null -ne $service.PathName) {
                 $servicepath = $service.PathName -replace '^(?:"(.+?)"|([^ ]+)).*', '$1$2'
                 $servicepath = "\\$($computer)\$($servicepath.Substring(0,1))$" + "$($servicepath.Substring(2))"

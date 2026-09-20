@@ -124,11 +124,11 @@ function Get-ActiveDirectoryOUpermissions {
     #Create empty variable acltotal, loop through all OU's and save the ACL's to $acltotal
     $acltotal = foreach ($ou in $oulist) {
         Write-Host ("Processing {0}" -f $ou.DistinguishedName) -ForegroundColor Green
-        $acls = (Get-Acl -path "AD:$($ou.DistinguishedName)").Access
+        $acls = (Get-Acl -Path "AD:$($ou.DistinguishedName)").Access
         foreach ($acl in $acls) {            
             #If IdentityReference matches item in $customidentifiers, change it to the friendly name
             #Otherwise just use the IdentityReference found by Get-Acl
-            if ($customidentifiers | Select-string "$($acl.IdentityReference.Value)" -SimpleMatch ) {
+            if ($customidentifiers | Select-String "$($acl.IdentityReference.Value)" -SimpleMatch ) {
                 $IdentityReference = ($customidentifiers | Select-Object -Property $acl.IdentityReference.Value).$($acl.IdentityReference.Value)
             }
             else {

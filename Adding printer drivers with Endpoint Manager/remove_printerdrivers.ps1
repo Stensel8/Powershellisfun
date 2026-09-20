@@ -9,4 +9,4 @@ foreach ($driver in $drivers) {
         C:\Windows\System32\pnputil.exe -d $driver.Path
     }
 }
-remove-Item -Path c:\programdata\customer\Printers -Recurse -Force:$true -Confirm:$false
+Remove-Item -Path c:\programdata\customer\Printers -Recurse -Force:$true -Confirm:$false

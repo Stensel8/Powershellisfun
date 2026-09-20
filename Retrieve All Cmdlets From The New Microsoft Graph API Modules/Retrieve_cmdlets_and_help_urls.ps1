@@ -2,24 +2,24 @@
 $csvlocation = 'c:\temp\Microsoft.Graph.Cmdlets.csv'
  
 #Get a list of all available Microsoft.Graph modules
-Write-host ("Getting a list of available online Microsoft.Graph modules...") -ForegroundColor Green
-$OnlineMicrosoftGraphModules = find-module -name Microsoft.Graph* | Where-Object Name -NotMatch 'Microsoft.Graph.PlusPlus' | Sort-Object Name
+Write-Host ("Getting a list of available online Microsoft.Graph modules...") -ForegroundColor Green
+$OnlineMicrosoftGraphModules = Find-Module -Name Microsoft.Graph* | Where-Object Name -NotMatch 'Microsoft.Graph.PlusPlus' | Sort-Object Name
  
 #Get a list of all installed Microsoft.Graph Modules
-Write-host ("Getting a list of installed Microsoft.Graph modules...") -ForegroundColor Green
+Write-Host ("Getting a list of installed Microsoft.Graph modules...") -ForegroundColor Green
 $InstalledMicrosoftGraphModules = Get-InstalledModule -Name Microsoft.Graph*
  
 #Install and import all Microsoft.Graph modules except the PlusPlus module which is for AzureAD 'work or school' accounts and 'personal' Microsoft accounts
 Write-Host ("Installing all Microsoft.Graph Modules but skipping is already installed...") -ForegroundColor Green
 foreach ($module in $OnlineMicrosoftGraphModules) {
     if (-not ($InstalledMicrosoftGraphModules -match $module.Name)) {
-        write-host ("Installing {0}..." -f $module.Name)-ForegroundColor Green
+        Write-Host ("Installing {0}..." -f $module.Name)-ForegroundColor Green
         Install-Module -Name $module.Name -ErrorAction SilentlyContinue
     }
 }
  
 #Resfresh the list of all installed Microsoft.Graph Modules after installing all Microsft Graph modules
-Write-host ("Resfreshing the list of installed Microsoft.Graph modules...") -ForegroundColor Green
+Write-Host ("Resfreshing the list of installed Microsoft.Graph modules...") -ForegroundColor Green
 $InstalledMicrosoftGraphModules = Get-InstalledModule -Name Microsoft.Graph*
  
 #Remove oldest version of Microsoft.Graph modules if there are more versions installed
@@ -40,7 +40,7 @@ Foreach ($Module in $InstalledMicrosoftGraphModules | Sort-Object Name) {
 #retrieve all cmdlets together with the synopsis and add them to $total
 $total = foreach ($module in $InstalledMicrosoftGraphModules) { 
     Write-Host ("Processing {0}..." -f $module.Name) -ForegroundColor Green
-    $cmdlets = get-command -Module $module.Name
+    $cmdlets = Get-Command -Module $module.Name
     foreach ($cmdlet in $cmdlets) {
         #Retrieve Synopsis (Remove Read-Only, Read-Wite, Nullable and Supports $expand if found) and URL to docs.microsoft.com for the cmdlet
         $help = Get-Help $cmdlet

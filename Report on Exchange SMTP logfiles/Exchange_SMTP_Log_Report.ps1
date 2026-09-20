@@ -24,7 +24,7 @@ catch {
 
 foreach ($logfile in $files) {
     $filenumber++
-    write-host ("[{0}/{1}] Processing file {2}" -f $filenumber, $files.count, $logfile.FullName) -ForegroundColor Green
+    Write-Host ("[{0}/{1}] Processing file {2}" -f $filenumber, $files.count, $logfile.FullName) -ForegroundColor Green
     try {
         $csv = Import-Csv -Path $logfile.Fullname -Header 'date-time', 'connector-id', 'session-id', 'sequence-number', 'local-endpoint', 'remote-endpoint', 'event', 'data', 'context' -Delimiter ',' -Encoding UTF8
     }

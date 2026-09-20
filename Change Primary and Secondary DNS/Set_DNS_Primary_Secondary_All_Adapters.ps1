@@ -19,7 +19,7 @@ foreach ($adapter in $adapters) {
     
         if ($dnsservers -notcontains $primary -or $dnsservers -notcontains $secondary) {
             try {
-                Set-DNSClientServerAddress -ServerAddresses ($primary, $secondary) -InterfaceIndex $adapter.ifIndex -ErrorAction Stop
+                Set-DnsClientServerAddress -ServerAddresses ($primary, $secondary) -InterfaceIndex $adapter.ifIndex -ErrorAction Stop
                 Write-Host ("Changing DNS settings for {0} to {1} and {2} (Previous setting was {3}) on {4}" -f $adapter.Name, $primary, $secondary, $($dnsservers -join ', '), $env:COMPUTERNAME) -ForegroundColor Green
             }
             catch {

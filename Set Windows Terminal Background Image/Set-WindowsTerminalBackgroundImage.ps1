@@ -33,7 +33,7 @@ if ($RandomBackgroundFolder -and $BackgroundPath) {
 
 #Check $BackgroundPath location
 if ($BackgroundPath) {
-    if (-not (Get-ChildItem -Path $BackgroundPath -ErrorAction SilentlyContinue | where-object Extension -In '.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff', '.ico')) {
+    if (-not (Get-ChildItem -Path $BackgroundPath -ErrorAction SilentlyContinue | Where-Object Extension -In '.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff', '.ico')) {
         Write-Warning ("Specified Wallpaper {0} has no .jpg, .jpeg, .png, .bmp, .gif, .tiff, .ico extension, check spelling or permissions. Set-WindowsTerminalBackgroundImage is exiting..." -f $BackgroundPath)
         break
     }

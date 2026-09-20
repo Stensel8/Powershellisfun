@@ -92,11 +92,11 @@ if ($PSCmdlet.ParameterSetName -eq 'All') {
 #Start Transcript logging in Temp folder
 Start-Transcript $ENV:TEMP\install.log
  
-#Set-Executionpolicy and no prompting
+#Set-ExecutionPolicy and no prompting
 Set-ExecutionPolicy Bypass -Force:$True -Confirm:$false -ErrorAction SilentlyContinue
 Set-Variable -Name 'ConfirmPreference' -Value 'None' -Scope Global
  
-#Change invoke-webrequest progress bar to hidden for faster downloads
+#Change Invoke-WebRequest progress bar to hidden for faster downloads
 $ProgressPreference = 'SilentlyContinue'
  
 #Import list of apps, features and modules that can be installed using json file
@@ -106,8 +106,8 @@ $json = Get-Content "$($PSScriptRoot)\Install_apps.json" | ConvertFrom-Json
 if ($Apps -or $MicrosftVCRuntime -or $All) {
     if (!(Get-AppxPackage -Name Microsoft.Winget.Source)) {
         Write-Host ("Winget was not found and installing now") -ForegroundColor Yellow
-        Invoke-Webrequest -uri https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx -Outfile $ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx -UseBasicParsing
-        Invoke-Webrequest -uri https://aka.ms/getwinget -Outfile $ENV:TEMP\winget.msixbundle -UseBasicParsing
+        Invoke-WebRequest -Uri https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx -OutFile $ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx -UseBasicParsing
+        Invoke-WebRequest -Uri https://aka.ms/getwinget -OutFile $ENV:TEMP\winget.msixbundle -UseBasicParsing
         Add-AppxPackage $ENV:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.appx -ErrorAction SilentlyContinue
         Add-AppxPackage -Path $ENV:TEMP\winget.msixbundle -ErrorAction SilentlyContinue
     }
@@ -116,7 +116,13 @@ if ($Apps -or $MicrosftVCRuntime -or $All) {
 if ($MicrosftVCRuntime -or $All) {
     #Install Microsoft Visual C++ Runtimes using WinGet
     Write-Host ("Installing Microsoft Visual C++ Runtime versions but skipping install if already present") -ForegroundColor Green
-    $CurrentVC = Get-WmiObject -Class Win32_Product -Filter "Name LIKE '%Visual C++%'" -ErrorAction SilentlyContinue | Select-Object Name
+    #Read the installed products from the registry Uninstall keys. Get-WmiObject is deprecated, and its Win32_Product
+    #replacement Get-CimInstance -ClassName Win32_Product triggers an MSI consistency check on every installed package
+    $UninstallKeys = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
+    'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*'
+    $CurrentVC = Get-ItemProperty -Path $UninstallKeys -ErrorAction SilentlyContinue |
+        Where-Object DisplayName -Like '*Visual C++*' |
+        Select-Object @{Name = 'Name'; Expression = { $_.DisplayName } }
     Foreach ($App in $json.MicrosftVCRuntime) {
         Write-Host ("Checking if {0} is already installed..." -f $App)
         if (!($CurrentVC | Select-String $App.split('+')[2].SubString(0, 4) | Select-String $App.split('-')[1])) {
@@ -136,7 +142,7 @@ if ($Apps -or $All) {
             Write-Host ("{0} was not found and installing now" -f $App.Split('.')[1]) -ForegroundColor Yellow
             winget.exe install $App --silent --force --source winget --accept-package-agreements --accept-source-agreements
             Foreach ($Application in $json.ProcessesToKill) {
-                get-process $Application -ErrorAction SilentlyContinue | Stop-Process -Force:$True -Confirm:$false
+                Get-Process $Application -ErrorAction SilentlyContinue | Stop-Process -Force:$True -Confirm:$false
             }
         } 
     }
@@ -159,7 +165,7 @@ if ($SCCMTools -or $All) {
     Write-Host ("Checking if System Center 2012 R2 Configuration Manager Toolkit is already installed") -ForegroundColor Green
     if (!(Test-Path 'C:\Program Files (x86)\ConfigMgr 2012 Toolkit R2')) {
         Write-Host ("SCCM 2012 R2 Toolkit was not found and installing now") -ForegroundColor Yellow
-        Invoke-Webrequest -uri https://download.microsoft.com/download/5/0/8/508918E1-3627-4383-B7D8-AA07B3490D21/ConfigMgrTools.msi -UseBasicParsing -Outfile $ENV:TEMP\ConfigMgrTools.msi
+        Invoke-WebRequest -Uri https://download.microsoft.com/download/5/0/8/508918E1-3627-4383-B7D8-AA07B3490D21/ConfigMgrTools.msi -UseBasicParsing -OutFile $ENV:TEMP\ConfigMgrTools.msi
         msiexec.exe /i $ENV:TEMP\ConfigMgrTools.msi /qn    
     }
 }
@@ -169,7 +175,7 @@ if ($SysInternalsSuite -or $All) {
     Write-Host ("Checking if SysInternals Suite is present") -ForegroundColor Green
     if (!(Test-Path 'C:\Program Files (x86)\SysInterals Suite')) {
         Write-Host ("SysInternalsSuite was not found and installing now") -ForegroundColor Yellow
-        Invoke-Webrequest -uri https://download.sysinternals.com/files/SysinternalsSuite.zip -Outfile $ENV:TEMP\SysInternalsSuite.zip -UseBasicParsing
+        Invoke-WebRequest -Uri https://download.sysinternals.com/files/SysinternalsSuite.zip -OutFile $ENV:TEMP\SysInternalsSuite.zip -UseBasicParsing
         Expand-Archive -LiteralPath $ENV:TEMP\SysInternalsSuite.zip -DestinationPath 'C:\Program Files (x86)\SysInterals Suite'
         $OldPath = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).Path
         $NewPath = $OldPath + ';C:\Program Files (x86)\SysInterals Suite\'
@@ -182,7 +188,7 @@ if ($IntuneWinAppUtil -or $All) {
     Write-Host ("Checking if IntuneWinAppUtil Suite is present") -ForegroundColor Green
     if (!(Test-Path 'c:\windows\system32\IntuneWinAppUtil.exe')) {
         Write-Host ("IntuneWinAppUtil was not found and installing now") -ForegroundColor Yellow
-        Invoke-Webrequest -uri https://github.com/microsoft/Microsoft-Win32-Content-Prep-Tool/raw/master/IntuneWinAppUtil.exe -Outfile c:\windows\system32\intunewinapputil.exe -UseBasicParsing
+        Invoke-WebRequest -Uri https://github.com/microsoft/Microsoft-Win32-Content-Prep-Tool/raw/master/IntuneWinAppUtil.exe -OutFile c:\windows\system32\intunewinapputil.exe -UseBasicParsing
     }
 }
  
@@ -201,7 +207,11 @@ if ($Features -or $All) {
 if ($PowerShellModules -or $All) {
     #Install PowerShell Modules
     Write-Host ("Installing Modules but skipping install if already present") -ForegroundColor Green
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    #Windows PowerShell 5.1 still negotiates TLS 1.0/1.1 by default, which the PowerShell Gallery refuses.
+    #PowerShell 7 follows the operating system defaults, so only add TLS 1.2 on the Desktop edition instead of pinning it
+    if ($PSVersionTable.PSEdition -eq 'Desktop') {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+    }
  
     Set-PSRepository PSGallery -InstallationPolicy Trusted
  
@@ -221,7 +231,7 @@ if ($RSATTools -or $All) {
         Write-Host ("Checking if {0} is already installed..." -f $Tool.Split('~')[0])
         if ((Get-WindowsCapability -Online -Name:$Tool).State -ne 'Installed') {
             Write-Host ("{0} was not found and installing now" -f $Tool.Split('~')[0]) -ForegroundColor Yellow
-            DISM.exe /Online /add-capability /CapabilityName:$Tool /NoRestart /Quiet | Out-Null
+            Add-WindowsCapability -Online -Name:$Tool -NoRestart:$True | Out-Null
         }
     }
 }
@@ -232,7 +242,7 @@ if ($PowerShellProfile -or $All) {
     Foreach ($Setting in $json.PowerShellProfile) {
         Write-Host ("Checking if {0} is already added..." -f $Setting)
         if (!(Test-Path $profile)) {
-            New-Item -Path $profile -ItemType:File -Force:$True | out-null
+            New-Item -Path $profile -ItemType:File -Force:$True | Out-Null
         }
         if (!(Get-Content $profile | Select-String -Pattern $Setting -SimpleMatch)) {
             Write-Host ("{0} was not found and adding now" -f $Setting) -ForegroundColor Yellow

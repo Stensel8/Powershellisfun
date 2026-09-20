@@ -6,7 +6,7 @@ function Set-IISSMTPRelayRestrictions {
     #Check if CSV file is present and accessible
     try {
         $IPAddresses = Import-Csv -Path $CSVFile -Delimiter ';'
-        write-host ("{0} found, continuing..." -f $CSVFile) -ForegroundColor Green
+        Write-Host ("{0} found, continuing..." -f $CSVFile) -ForegroundColor Green
     }
     catch {
         Write-Warning ("{0} not found or not accessible, exiting..." -f $CSVFile)
@@ -37,11 +37,10 @@ function Set-IISSMTPRelayRestrictions {
         $ipblock[44] += 1   
     }
 
-    #Add the ip-adresses to the list
-    $smtpserversetting = get-wmiobject -namespace root\MicrosoftIISv2 -computername localhost -Query "Select * from IIsSmtpServerSetting"
+    #Add the ip-adresses to the list. Get-CimInstance/Set-CimInstance replace the deprecated Get-WmiObject and its .Put() method
+    $smtpserversetting = Get-CimInstance -Namespace 'root\MicrosoftIISv2' -Query 'Select * from IIsSmtpServerSetting'
     $ipblock += $octet
-    $smtpserversetting.RelayIpList = $ipblock
-    $smtpserversetting.put()
+    $smtpserversetting | Set-CimInstance -Property @{RelayIpList = $ipblock }
     Write-Host ("Added the IP-Adresses to the Relay Restrictions list") -ForegroundColor Green
 
 }

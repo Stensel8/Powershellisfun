@@ -88,7 +88,7 @@ function Start-WinGetUpdate {
 
             [System.Object]$GitHubInfo = [PSCustomObject]@{
                 Tag         = $latestVersion
-                DownloadUrl = $GithubInfoRestData.assets | where-object { $_.name -like "*.msixbundle" } | Select-Object -ExpandProperty browser_download_url
+                DownloadUrl = $GithubInfoRestData.assets | Where-Object { $_.name -like "*.msixbundle" } | Select-Object -ExpandProperty browser_download_url
                 OutFile     = "$env:TEMP\WinGet_$($latestVersion).msixbundle"
             }
         }
@@ -109,7 +109,7 @@ function Start-WinGetUpdate {
             Add-AppxPackage $($GitHubInfo.OutFile)
         }
         else {
-            Write-OutPut "Your already on the latest version of WinGet $($CheckWinGet), no need to update."
+            Write-Output "Your already on the latest version of WinGet $($CheckWinGet), no need to update."
         }
     }
 
@@ -132,7 +132,7 @@ function Start-WinGetUpdate {
     }
 
     # Starts to check if you have any softwares that needs to be updated
-    Write-OutPut "Checks if any software needs to be updated"
+    Write-Output "Checks if any software needs to be updated"
     try {
         WinGet.exe upgrade --all --silent --force --accept-source-agreements --disable-interactivity --include-unknown
         Write-Output "Everything is now completed, you can close this window"

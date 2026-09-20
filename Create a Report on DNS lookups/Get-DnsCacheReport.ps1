@@ -21,12 +21,12 @@ function Get-DnsCacheReport {
     $spinner = @('|', '/', '-', '\')
     $spinnerPos = 0
     $remain = $t
-    $d = ( get-date) + $t
+    $d = ( Get-Date) + $t
     [int]$TickLength = 1
-    $remain = ($d - (get-date))
+    $remain = ($d - (Get-Date))
     while ($remain.TotalSeconds -gt 0) {
         Write-Host (" {0} " -f $spinner[$spinnerPos % 4]) -ForegroundColor Green -NoNewline
-        write-host ("Gathering DNS Cache information, {0}D {1:d2}h {2:d2}m {3:d2}s remaining..." -f $remain.Days, $remain.Hours, $remain.Minutes, $remain.Seconds) -NoNewline -ForegroundColor Green
+        Write-Host ("Gathering DNS Cache information, {0}D {1:d2}h {2:d2}m {3:d2}s remaining..." -f $remain.Days, $remain.Hours, $remain.Minutes, $remain.Seconds) -NoNewline -ForegroundColor Green
         $host.UI.RawUI.CursorPosition = $origpos
         $spinnerPos += 1
         Start-Sleep -seconds $TickLength
@@ -67,13 +67,13 @@ function Get-DnsCacheReport {
                 Target     = $item.Data            
             }
         }
-        $remain = ($d - (get-date))
+        $remain = ($d - (Get-Date))
     }
     $host.UI.RawUI.CursorPosition = $origpos
     Write-Host (" * ")  -ForegroundColor Green -NoNewline
-    write-host (" Finished gathering DNS Cache information, displaying results in a Out-Gridview now...") -ForegroundColor Green
+    Write-Host (" Finished gathering DNS Cache information, displaying results in a Out-GridView now...") -ForegroundColor Green
     if ($CSVPath) {
-        write-host ("Results are also saved as {0}" -f $CSVPath) -ForegroundColor Green
+        Write-Host ("Results are also saved as {0}" -f $CSVPath) -ForegroundColor Green
     }
     
     #Save results to $CSVPath if specified as parameter
@@ -81,6 +81,6 @@ function Get-DnsCacheReport {
         $total | Select-Object Entry, RecordType, Status, Section, Target -Unique | Sort-Object Entry | Export-Csv -Path $CSVPath -Encoding UTF8 -Delimiter ';' -NoTypeInformation -Force
     }
     
-    #Return results in Out-Gridview
+    #Return results in Out-GridView
     return $total | Select-Object Entry, RecordType, Status, Section, Target -Unique | Sort-Object Entry | Out-GridView  
 }

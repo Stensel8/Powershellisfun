@@ -116,7 +116,7 @@ if ($null -ne $total) {
                     $total | Sort-Object Name, Author, Version, 'Release Date', 'Installer Architecture' | Out-ConsoleGridView -Title 'WinGet Information'
                 }
                 catch {
-                    Write-Warning ("Error sending information to Out-ConsoleGridview, exiting...")
+                    Write-Warning ("Error sending information to Out-ConsoleGridView, exiting...")
                     return
                 }
             }
@@ -125,7 +125,7 @@ if ($null -ne $total) {
                     $total | Sort-Object Name, Author, Version, 'Release Date', 'Installer Architecture' | Out-GridView -Title 'WinGet Information'
                 }
                 catch {
-                    Write-Warning ("Error sending information to Out-Gridview, exiting...")
+                    Write-Warning ("Error sending information to Out-GridView, exiting...")
                     return
                 }
             }

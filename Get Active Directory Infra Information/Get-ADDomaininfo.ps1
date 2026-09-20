@@ -80,7 +80,7 @@ function Get-ADDomaininfo {
             "None"
         }
         "Domain Functional Level"      = (Get-ADDomain).DomainMode
-        "Exchange Server(s)"           = if (Get-ADGroup -Filter { SamAccountName -eq "Exchange Servers" }) {
+        "Exchange Server(s)"           = if (Get-ADGroup -Filter 'SamAccountName -eq "Exchange Servers"') {
             (Get-ADGroupMember -Identity "Exchange Servers" | Where-Object ObjectClass -eq 'Computer').Name -join ", "
         }
         else {

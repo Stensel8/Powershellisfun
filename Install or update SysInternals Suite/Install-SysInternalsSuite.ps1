@@ -36,7 +36,11 @@ function Install-SysInternalsSuite {
 
     # Download and extract the latest version
     try {
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        #Windows PowerShell 5.1 still negotiates TLS 1.0/1.1 by default, PowerShell 7 follows the operating system
+        #defaults. Add TLS 1.2 on the Desktop edition only, instead of pinning the whole protocol list to it
+        if ($PSVersionTable.PSEdition -eq 'Desktop') {
+            [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+        }
         $ProgressPreference = "SilentlyContinue"
         Invoke-WebRequest -Uri https://download.sysinternals.com/files/SysinternalsSuite.zip -OutFile $ENV:TEMP\SysInternalsSuite.zip -UseBasicParsing -ErrorAction Stop
         Write-Host ("Downloading latest version to {0}\SysinternalsSuite.zip" -f $env:temp) -ForegroundColor Green

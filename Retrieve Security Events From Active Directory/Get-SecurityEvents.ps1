@@ -180,6 +180,8 @@ function Get-SecurityEvents {
                         To          = $to_emailaddress
                   }
                   Write-Host ("- Emailing the {0} events found to {1}..." -f $collection.count, $to_emailaddress) -ForegroundColor Green
+                  #Send-MailMessage is marked obsolete by Microsoft because it can't guarantee a secure connection to the
+                  #SMTP server. There is no in-box replacement, consider Send-MgUserMail (Microsoft Graph) or Mailozaurr
                   try {
                         Send-MailMessage @emailoptions 
                   }

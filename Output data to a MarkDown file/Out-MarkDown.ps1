@@ -22,7 +22,7 @@ Function Out-MarkDown {
         #Validate write access to specified $OutputFile location if Overwrite switch was used
         if ((Test-Path -Path $OutputFile) -and $Overwrite) {
             try {
-                New-Item -Path $OutputFile -ItemType File -force:$Overwrite -ErrorAction Stop | Out-Null
+                New-Item -Path $OutputFile -ItemType File -Force:$Overwrite -ErrorAction Stop | Out-Null
                 Write-Host ("Overwriting existing file {0}" -f $OutputFile) -ForegroundColor Green
             }
             catch {

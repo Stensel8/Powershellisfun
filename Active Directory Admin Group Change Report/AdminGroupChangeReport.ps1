@@ -61,9 +61,9 @@ $members = foreach ($admingroup in $admingroups) {
 
 #Save found members to currentmembers.csv and create previousmembers.csv if not present (First Run)
 Write-Host ("- Exporting results to currentmembers.csv") -ForegroundColor Green
-$members | export-csv -Path "$($logs)\currentmembers.csv" -NoTypeInformation -Encoding UTF8 -Delimiter ';'
+$members | Export-Csv -Path "$($logs)\currentmembers.csv" -NoTypeInformation -Encoding UTF8 -Delimiter ';'
 if (-not (Test-Path "$($logs)\previousmembers.csv")) {
-    $members | export-csv -Path "$($logs)\previousmembers.csv" -NoTypeInformation -Encoding UTF8 -Delimiter ';'
+    $members | Export-Csv -Path "$($logs)\previousmembers.csv" -NoTypeInformation -Encoding UTF8 -Delimiter ';'
 }
 
 #Compare currentmembers.csv to the #previousmembers.csv
@@ -104,6 +104,8 @@ if ($null -ne $compare) {
         To          = 'harm@powershellisfun.com'     
     }
     
+    #Send-MailMessage is marked obsolete by Microsoft because it can't guarantee a secure connection to the SMTP server.
+    #There is no in-box replacement, consider Send-MgUserMail (Microsoft Graph) or the Mailozaurr module instead
     try {
         Send-MailMessage @options
     }

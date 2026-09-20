@@ -100,7 +100,7 @@ function Get-IntuneNonCompliantDevices {
             Remove-Item -Path $outputfile -Force:$true -Confirm:$false | Out-Null
             
             #Install ImportExcel module if needed
-            write-host ("`nChecking if ImportExcel PowerShell module is installed...") -ForegroundColor Green
+            Write-Host ("`nChecking if ImportExcel PowerShell module is installed...") -ForegroundColor Green
             if (-not (Get-Module -ListAvailable | Where-Object Name -Match ImportExcel)) {
                 Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
                 Install-Module ImportExcel -Scope CurrentUser -Force:$true

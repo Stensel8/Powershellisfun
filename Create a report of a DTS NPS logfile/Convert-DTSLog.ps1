@@ -1,4 +1,4 @@
-function Convert-DTSlog {
+function Convert-DTSLog {
     [CmdletBinding(DefaultParameterSetName = 'Outfile')]
     param (
         [Parameter(Mandatory = $true, HelpMessage = "Enter the path to where the DTS logfile is located, e.g c:\temp\IN2403.log")][string]$DTSLogfile,
@@ -127,7 +127,7 @@ function Convert-DTSlog {
             Remove-Item -Path $Outfile -Force:$true -Confirm:$false | Out-Null
             
             #Install ImportExcel module if needed
-            write-host ("`nChecking if ImportExcel PowerShell module is installed...") -ForegroundColor Green
+            Write-Host ("`nChecking if ImportExcel PowerShell module is installed...") -ForegroundColor Green
             if (-not (Get-Module -ListAvailable | Where-Object Name -Match ImportExcel)) {
                 Write-Warning ("`nImportExcel PowerShell Module was not found, installing...")
                 Install-Module ImportExcel -Scope CurrentUser -Force:$true

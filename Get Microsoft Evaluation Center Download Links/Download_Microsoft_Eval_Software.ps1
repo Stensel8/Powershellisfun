@@ -49,7 +49,7 @@ $totalfound = foreach ($url in $urls) {
                 -or $_.'aria-label' -match '64-bit edition' }    
         $count = $DownloadLinks.href.Count
         $totalcount += $count
-        Write-host ("Processing {0}, Found {1} Download(s)..." -f $url, $count) -ForegroundColor Green
+        Write-Host ("Processing {0}, Found {1} Download(s)..." -f $url, $count) -ForegroundColor Green
         foreach ($DownloadLink in $DownloadLinks) {
             [PSCustomObject]@{
                 Title  = $url.split('/')[5].replace('-', ' ').replace('download ', '')

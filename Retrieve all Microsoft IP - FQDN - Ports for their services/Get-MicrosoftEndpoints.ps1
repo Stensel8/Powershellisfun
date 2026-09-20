@@ -7,7 +7,7 @@ function Get-MicrosoftEndpoints {
     $ProgressPreference = "SilentlyContinue"
     try {
         $site = Invoke-WebRequest -Uri 'https://learn.microsoft.com/en-us/microsoft-365/enterprise/urls-and-ip-address-ranges?view=o365-worldwide' -UseBasicParsing
-        $jsonlink = ($site.Links | where-Object OuterHTML -match 'JSON formatted').href
+        $jsonlink = ($site.Links | Where-Object OuterHTML -match 'JSON formatted').href
     }
     catch {
         Write-Warning ("Error downloading JSON file, please check if https://learn.microsoft.com/en-us/microsoft-365/enterprise/urls-and-ip-address-ranges?view=o365-worldwide is accessible")
@@ -91,7 +91,7 @@ function Get-MicrosoftEndpoints {
         }
     }
     else {
-        #Export to Out-Gridview
+        #Export to Out-GridView
         Write-Host ("Exporting results to Out-GridView `nDone!") -ForegroundColor Green
         $Total | Sort-Object serviceAreaDisplayName | Out-GridView -Title 'Microsoft Endpoints Worldwide'
     }
